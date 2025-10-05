@@ -1,33 +1,40 @@
+// 진법 변환2
+// 과정
+// 1. n(10진수) 와 B(변환할 진법) 입력받음
+// 2. n보다 커지는 B의 a제곱에 대한 a를 구함
+// 3. a부터 시작해서 0 까지 B^a로 n을 나눔
+
 const rl = require('readline').createInterface({
-    input : process.stdin, output :process.stdout
+    input :process.stdin, output: process.stdout
 });
 
+var digits = {}
+for(var i = 0 ; i <10; i++) digits[i.toString()] = i;
+for(var i = 0 ; i <26; i++) digits[(10+i).toString()] = String.fromCharCode(65+i);
 
-const digits= {};
-for(let i=0;i<10;i++) digits[i.toString()] = i;
-for(let i=0;i<26;i++) digits[String.fromCharCode(65+i)] = 10 +i;
 
-let b, n;
-
-let input = [];
+var n, b;
 
 rl.on('line',(line)=>{
-   input.push(line.split(' '));
+    [n,b] = line.split(' ').map(Number);
+
+    rl.close();
 }).on('close',()=>{
-    n = input[0][0].toUpperCase();;
-    b = parseInt(input[0][1]);
+    var m = 0;
 
-    var len = n.length - 1;
+    while(n > b**m){
+        // console.log(b**m);
+        m++;
+    }
+    // console.log(`${n} is smaller than ${b**m}, and m is ${m}`)
 
-    var result = 0;
-
-    for(var i = len ; i >= 0; i--){
-        result += digits[n[i]] * b**(len-i);
+    var result = [];
+    for(var i = m-1; i >= 0; i--){
+        var mulB = Math.floor(n / b**i);
+        n = n - (mulB*b**i)
+        result.push(mulB)
     }
 
-    console.log(result);
 
-
+    console.log(result.map(e=>digits[e]).join(''));
 })
-
-
