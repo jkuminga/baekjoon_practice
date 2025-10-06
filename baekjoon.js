@@ -1,49 +1,28 @@
-// 2720 세탁소  사장 동혁
-// 문제 : 케이스 수 (n) 만큼 반환해 줄 거스름돈을 입력 받아, 각 거스름돈을 쿼터, 다임, 니켈, 페니읙 개수를 반환
+// 2903 중앙 이동 알고리즘
+// 규칙성 발견 : 다음 사각형의 한 모서리의 점 개수는 이전 사각형의 한 모서리의 점의 개수의 두 배 1을 뺀 값과 같다
+// n번째 점 개수 : ((n-1번째 한 모서리의 점의 개수) x 2 -1 )^2
+
 
 const rl = require('readline').createInterface({
     input : process.stdin, output : process.stdout
 });
 
-const qtr = 25, dime =10, nik = 5, pen = 1;
-var inputs =[];
 
-var totalResults = [];
+var n;
+const base = 2;
 
 rl.on('line', (line)=>{
-    inputs.push(parseInt(line))
-}).on('close', ()=>{
-    var num = inputs[0];
-    var changes = inputs.slice(1, num+1);
+    n = line.split(' ').map(Number);
 
-    
+    rl.close();
+})
 
-    for(var i = 0; i<changes.length; i++){
-        var results = [0,0,0,0];
+rl.on('close',()=>{
+    var result = base; // 정사각형의 한 모서리 위의 점의 개수
 
-        while(changes[i] >= qtr){
-            changes[i] -= qtr;
-            results[0] += 1;
-            // console.log(`current change is ${changes[i]} and ${results[0]}`)
-        }
-
-        while(changes[i] >= dime){
-            changes[i] -= dime;
-            results[1] += 1;
-            // console.log(`current change is ${changes[i]} and ${results[1]}`)
-        }
-        while(changes[i] >= nik){
-            changes[i] -= nik;
-            results[2] += 1;
-            // console.log(`current change is ${changes[i]} and ${results[2]}`)
-        }
-        while(changes[i] >= pen){
-            changes[i] -= pen;
-            results[3] += 1;
-            // console.log(`current change is ${changes[i]} and ${results[3]}`)
-        }
-
-        console.log(...results)
+    for(var i = 0 ; i < n ; i++){
+        result = (result*2)-1 
+        
     }
-
+    console.log(result**2);
 })
