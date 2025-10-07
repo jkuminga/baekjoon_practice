@@ -1,29 +1,52 @@
-// 2292 벌집
-// 1번 노드 기준 해당 노드까지의 최단 거리 : 1번 노드부터 해당 노드가 위치한 레이어까지의 개수
-// 각 레이어의 개수 : 6*(n-1)개
+// 1193 분수 찾기
+// 일단 현재 아이디어
+// 레이어 n 의 노드 개수 = (분자 + 분모) -1 개 = n 
+// 레이어 n의 진행방향 -> n이 짝수일 때 1/(n+1) 부터 (n+1) / 1 방향
+// 그래서 일단 타겟 넘버가 위치하는 레이어를 구한 후 그 레이어 위에서 배열을 구해서 리턴하는 방향으로 진행
+// ex) 13-> 5번 레이어 -> 11~15 까지 배열 나열 1/5, 2/4, 3/3, 4/2, 5/1
+
 
 const rl = require('readline').createInterface({
-    input: process.stdin, output : process.stdout
+    input : process.stdin, output : process.stdout
 });
 
-var targetNode;
+function createFractionsList(layer){
+    var list = [];
+    for(var i = 0 ; i <layer; i ++){
+        list.push(`${i+1}/${layer - i}`)
+        // console.log(list)
+    }
+    if(layer% 2 == 1) list.reverse();
+
+    return list;
+}
 
 rl.on('line', (line)=>{
-    targetNode = parseInt(line);
+    var input = line.trim();
 
-    rl.close();
-}).on('close',()=>{
-    var totalNodes = 1; // 현재 레이어까지 총 노드 개수
-    var layer = 1; // 현재 레이어
-    
+    var currentLayer = 1;
+    var totalNodeCount = 1;
+
+
     while(true){
-        if(targetNode ===1) break; // 입력한 타겟 노드가 1이면 그대로 1출력
-        layer ++; // 레이어 개수 하나 증가
-        totalNodes = totalNodes + 6*(layer - 1 ); //레이어 증가에 따른 해당 레이어의 노드 개수 만큼 총 노드 개수에 추가
+        if(input === '1') break;
+        currentLayer += 1;
+        totalNodeCount += currentLayer;
 
-        if(targetNode <= totalNodes) break; // 타겟 노드가 현재 총 노드 수보다 작으면 리턴
+        // console.log(`현재 ${currentLayer}이고, 총 ${totalNodeCount}의 노드가 쌓여있습니다.`)
+
+        if(totalNodeCount >= input) {
+            input = input - (totalNodeCount - currentLayer);
+            break;
+        }
     }
 
-    console.log(layer); //1번부터 타겟노드까지 최단 거리 : 타겟노드가 위치한 레이어 
+    // console.log(`타겟 값 ${input}은 현재 레이어 ${currentLayer} 위에 위치하고 있습니다.`)
 
+    var currentLayerFractionsList = createFractionsList(currentLayer);
+
+    // console.log(currentLayerFractionsList);
+
+    // console.log(`${currentLayerFractionsList}의 ${input}값 찾기`)
+    console.log(currentLayerFractionsList[input-1]);
 })
