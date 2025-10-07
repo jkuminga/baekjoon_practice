@@ -1,28 +1,29 @@
-// 2903 중앙 이동 알고리즘
-// 규칙성 발견 : 다음 사각형의 한 모서리의 점 개수는 이전 사각형의 한 모서리의 점의 개수의 두 배 1을 뺀 값과 같다
-// n번째 점 개수 : ((n-1번째 한 모서리의 점의 개수) x 2 -1 )^2
-
+// 2292 벌집
+// 1번 노드 기준 해당 노드까지의 최단 거리 : 1번 노드부터 해당 노드가 위치한 레이어까지의 개수
+// 각 레이어의 개수 : 6*(n-1)개
 
 const rl = require('readline').createInterface({
-    input : process.stdin, output : process.stdout
+    input: process.stdin, output : process.stdout
 });
 
-
-var n;
-const base = 2;
+var targetNode;
 
 rl.on('line', (line)=>{
-    n = line.split(' ').map(Number);
+    targetNode = parseInt(line);
 
     rl.close();
-})
+}).on('close',()=>{
+    var totalNodes = 1; // 현재 레이어까지 총 노드 개수
+    var layer = 1; // 현재 레이어
+    
+    while(true){
+        if(targetNode ===1) break; // 입력한 타겟 노드가 1이면 그대로 1출력
+        layer ++; // 레이어 개수 하나 증가
+        totalNodes = totalNodes + 6*(layer - 1 ); //레이어 증가에 따른 해당 레이어의 노드 개수 만큼 총 노드 개수에 추가
 
-rl.on('close',()=>{
-    var result = base; // 정사각형의 한 모서리 위의 점의 개수
-
-    for(var i = 0 ; i < n ; i++){
-        result = (result*2)-1 
-        
+        if(targetNode <= totalNodes) break; // 타겟 노드가 현재 총 노드 수보다 작으면 리턴
     }
-    console.log(result**2);
+
+    console.log(layer); //1번부터 타겟노드까지 최단 거리 : 타겟노드가 위치한 레이어 
+
 })
