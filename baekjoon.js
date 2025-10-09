@@ -1,42 +1,47 @@
 /* 
-<9506번 약수들의 합>
+<1978번 소수 찾기>
 개요
-- 어떤 숫자 n이 자신을 제외한 모든 약수들의 합과 같으면 그 수를 완전수라고 함
-- n이 완전수인지를 판단해주는 프로그램 작성
+- 입력한 숫자들 중 소수인 숫자들의 개수를 반환하는 코드
+
+입력
+- 첫 줄에 입력할 숫자의 개수 n을 입력
+- 다음 줄에 N 개의 수를 입력
 
 출력
-- 완전수인 경우 : n = a + b + c
-- 완전수가 아닌경우 : n is NOT perfect.
+- n개 의 수 중 소수의 개수를 출력
 
 구현
-- 먼저 약수를 구해서 배열에 넣고 배열의 마지막 인덱스의 값과 나머지들의 합이 같은 경우 완전수
- */
+- 각 수의 약수 개수를 찾아서 반환하는 함수 생성
+- 약수의 개수가 2인 경우 소수로 판단
+*/
 
 const rl = require('readline').createInterface({
     input : process.stdin ,output : process.stdout
 });
 
+var input= [];
+
+function countFactors(number){
+    var factorCount = 0 ;
+    for(var i = 1 ; i <= number ; i ++){
+        if(number % i === 0) factorCount ++;
+    }
+
+    return factorCount;
+}
 
 rl.on('line',(line)=>{
-    const number = parseInt(line);
-
-    if(number === -1) {
-        rl.close();
-        return ;
-    }
-
-    var factors = []; 
-
-    for(var i = 1 ; i <number; i++){
-        if(number % i === 0 ) factors.push(i);
-    }
+    input.push(line)
+}).on('close', ()=>{
+    var n = input[0];
+    var numbers = input[1].split(' ').map(Number);
 
     var sum = 0;
 
-    for(var f of factors) sum += f
+    for(var i = 0 ; i < n ; i ++){
+        if( countFactors(numbers[i]) === 2) sum ++;
+    }
 
-    if(number === sum) console.log(`${number} =`, factors.join(' + '));
-    else console.log(`${number} is NOT perfect.`)
-    
+    console.log(sum);
 
 })
