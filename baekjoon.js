@@ -1,56 +1,37 @@
 /* 
-<11653 - 소인수분해>
+<1085 - 직사각형에서 탈출>
 ▶︎개요
-- 정수 N이 주어 졌을 때 소인수분해 하는 프로그램 작성
+- 현재 좌표 (x,y)에서, 각 좌표축에 평행하고 (0,0)을 왼쪽 아래 꼭짓점으로,
+  (w,h)을 오른쪽 위 꼭짓점으로 가지는 직사각형에 대해서, 현재 좌표에서 직사각형의
+  경계선까지 닿는 가장 가까운 거리 구하기
 
 ▶︎입력
-- 첫줄에 정수 N 입력
+- 첫줄에 정수 x,y,w,h 입력
 
 ▶︎출력
-- 소인수 분해 결과를 한 줄에 하나씩 오름차순으로 출력
-- N이 1 이면 아무것도 출력하지 않음
+- 현재 좌표에서 직사각형 경계까지의 최소 거리를 반환
 
-▶︎방법1
-- i가 현재 몫보다 작을 때 까지 반복
-- currentNumber를 i로 나누어 떨어지지 않을 때 까지 반복
-
-▶︎개선사항
-- 소인수분해 원리상 루트 n까지만 검사하면 됨 ( 조건을 만족하는 루트 n보다 큰 소수는 존재하지 않는다.  )
-- 함수 이름을 조금 더 명확하게 지어야 함
-
-
-
-
+▶︎아이디어
+- 점에서 직선까지 가장 가까운 거리는 수직선
+- 즉 x축에 대해서 0과 w 사이의 거리를 구하고, y값을 0과 h 사이 거리를 구해서
+- 그 중 가장 작은 값을 반환함
 */
 
 const rl = require('readline').createInterface({
-    input : process.stdin ,output : process.stdout
-});
-
-var input = [];
-
-rl.on('line', (line)=>{
-    input.push(Number(line));
-}).on('close',()=>{
-    factorize(input[0]);
+    input : process.stdin, output : process.stdout
 })
 
+let input;
 
-function factorize(number){
-    if(number===1){
-        return ;
-    }
-    var currentNumber = number;
-    var i  = 2;
+rl.on('line', (line)=>{
+    input = line.split(' ').map(Number);
+}).on('close',()=>{
+    const [x,y,w,h] = input;
     
-    while(i * i <= currentNumber){
-        while(currentNumber % i  === 0){
-            console.log(i)
-            currentNumber = currentNumber  / i;
-        }
-        i++;
-    }
+    const b0x = Math.abs(x - 0);
+    const bwx = Math.abs(x - w);
+    const b0y = Math.abs(y - 0);
+    const bhy = Math.abs(y - h);
 
-    if(currentNumber > 1) console.log(currentNumber)
-}
-
+    console.log( Math.min(b0x, bwx, b0y, bhy));
+})
