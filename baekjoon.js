@@ -15,6 +15,11 @@
 - 점에서 직선까지 가장 가까운 거리는 수직선
 - 즉 x축에 대해서 0과 w 사이의 거리를 구하고, y값을 0과 h 사이 거리를 구해서
 - 그 중 가장 작은 값을 반환함
+
+▶︎개선방향
+- 영점과 좌표 사이 거리는 그냥 x, y로 두면 됨(x-0을 왜하노)
+- 변수 지정하지 말고 바로 Math.min() 안에 넣어서 콘솔에 출력
+- 입력 x,y 값이 w,h보다 작아서 abs 필요없음
 */
 
 const rl = require('readline').createInterface({
@@ -27,11 +32,6 @@ rl.on('line', (line)=>{
     input = line.split(' ').map(Number);
 }).on('close',()=>{
     const [x,y,w,h] = input;
-    
-    const b0x = Math.abs(x - 0);
-    const bwx = Math.abs(x - w);
-    const b0y = Math.abs(y - 0);
-    const bhy = Math.abs(y - h);
 
-    console.log( Math.min(b0x, bwx, b0y, bhy));
+    console.log(Math.min(x, w-x, y, h-y));
 })
