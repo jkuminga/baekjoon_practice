@@ -1,20 +1,17 @@
 /* 
-<1085 - 직사각형에서 탈출>
+<15894 - 수학은 체육과목입니다.>
 ▶︎개요
-- 현재 좌표 (x,y)에서, 각 좌표축에 평행하고 (0,0)을 왼쪽 아래 꼭짓점으로,
-  (w,h)을 오른쪽 위 꼭짓점으로 가지는 직사각형에 대해서, 현재 좌표에서 직사각형의
-  경계선까지 닿는 가장 가까운 거리 구하기
+- 한 변의 길이가 1인 정사각형을 피라미드 식으로 붙여 나갈 때, 가장 아랫부분의 정사각형의
+  개수가 n개가 됬을 때 피라미드 의 총 둘레의 길이를 구하기
 
 ▶︎입력
-- 첫줄에 정수 x,y,w,h 입력
+- 첫줄에 n 입력
 
 ▶︎출력
-- 현재 좌표에서 직사각형 경계까지의 최소 거리를 반환
+- 피라미드 전체의 둘레의 길이
 
 ▶︎아이디어
-- 점에서 직선까지 가장 가까운 거리는 수직선
-- 즉 x축에 대해서 0과 w 사이의 거리를 구하고, y값을 0과 h 사이 거리를 구해서
-- 그 중 가장 작은 값을 반환함
+- an = n*4
 
 ▶︎개선방향
 - 영점과 좌표 사이 거리는 그냥 x, y로 두면 됨(x-0을 왜하노)
@@ -26,12 +23,10 @@ const rl = require('readline').createInterface({
     input : process.stdin, output : process.stdout
 })
 
-let input;
-
 rl.on('line', (line)=>{
-    input = line.split(' ').map(Number);
-}).on('close',()=>{
-    const [x,y,w,h] = input;
+    const n = Number(line);
 
-    console.log(Math.min(x, w-x, y, h-y));
+    console.log(n*4);
+
+    rl.close();
 })
