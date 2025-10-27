@@ -1,16 +1,18 @@
 /* 
-<3009 - 네번째 점>
+<9063 - 대지>
 ▶︎개요
-- 세 점이 주어졌을 때, 축에 평행한 직사각형을 만들기 위한 네번째 점의 좌표를 구하기
+- N 개의 점이 주어지고, 점이 위치한 모든 지점을 포함한 가장 작은 남북, 동서 방향으로
+  평행한 변을 갖는 직사각형의 대지의 크기를 찾기
 
 ▶︎입력
-- 줄 마다 x,y 값을 입력
+- 첫 줄에 옥구슬의 개수 n입력
+- 이 후 각 줄마다 x,y좌표 입력
 
 ▶︎출력
-- 네 번째 점의 좌표를 출력
+- 대지(직사각형)의 크기를 반환
 
 ▶︎아이디어
-- 점들 중 각 축에 대해서 하나 있는 값이 네번째점의 좌표가 되야 함
+- 길이와 높이의 최댓값을 찾으면 됨
 
 ▶︎개선방향
 */
@@ -21,43 +23,18 @@ const rl = require('readline').createInterface({
 
 let inputs = [];
 
-rl.on('line', (line)=>{
+rl.on('line',(line)=>{
     inputs.push(line.split(' ').map(Number));
 }).on('close',()=>{
-    let result = [];
+    const n = inputs[0];
+    const dots = inputs.slice(1, n+1);
+    const xs = dots.map((e)=>e[0]);
+    const ys = dots.map((e)=>e[1]);
 
-    if(inputs[2][0] === inputs[0][0]){
-        result.push(inputs[1][0])
-    }else if(inputs[2][0] === inputs[1][0]){
-        result.push(inputs[0][0])
-    }else{
-        result.push(inputs[2][0])
-    }
+    const width = Math.max(...xs) - Math.min(...xs)
+    const height = Math.max(...ys) - Math.min(...ys)
 
-    if(inputs[2][1] === inputs[0][1]){
-        result.push(inputs[1][1])
-    }else if(inputs[2][1] === inputs[1][1]){
-        result.push(inputs[0][1])
-    }else{
-        result.push(inputs[2][1])
-    }
-
-    console.log(result.join(' '));
+    console.log(width * height);
 })
 
 
-// let xs={}, ys={};
-    
-//     for(var i = 0 ; i < inputs.length;i++){
-//         if(xs[inputs[i][0]] === undefined) {
-//             xs[inputs[i][0]] = 1;
-//         }else{
-//             xs[inputs[i][0]] = xs[inputs[i][0]] + 1;
-//         }
-
-//         if(xy[inputs[i][1]] === undefined) {
-//             xy[inputs[i][1]] = 1;
-//         }else{
-//             xy[inputs[i][1]] = xy[inputs[i][1]] + 1;
-//         }
-//     }
