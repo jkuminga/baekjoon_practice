@@ -1,18 +1,18 @@
 /* 
-<9063 - 대지>
+<10101 - 삼각형 외우기>
 ▶︎개요
-- N 개의 점이 주어지고, 점이 위치한 모든 지점을 포함한 가장 작은 남북, 동서 방향으로
-  평행한 변을 갖는 직사각형의 대지의 크기를 찾기
+- 세 각의 크기를 받아서 삼각형의 분류를 반환 
 
 ▶︎입력
-- 첫 줄에 옥구슬의 개수 n입력
-- 이 후 각 줄마다 x,y좌표 입력
+- 줄마다 한 각을 입력
 
 ▶︎출력
-- 대지(직사각형)의 크기를 반환
-
+- 세 각의 크기가 모두 60이면 Equilateral
+- 세 각의 합이 180이고, 두 각이 같은 경우에는 Isosceles
+- 세 각의 합이 180이고, 같은 각이 없는 경우에는 Scalene
+- 세 각의 합이 180이 아닌 경우에는 Error
+ 
 ▶︎아이디어
-- 길이와 높이의 최댓값을 찾으면 됨
 
 ▶︎개선방향
 */
@@ -22,19 +22,25 @@ const rl = require('readline').createInterface({
 })
 
 let inputs = [];
-
 rl.on('line',(line)=>{
-    inputs.push(line.split(' ').map(Number));
+  inputs.push(parseInt(line));
 }).on('close',()=>{
-    const n = inputs[0];
-    const dots = inputs.slice(1, n+1);
-    const xs = dots.map((e)=>e[0]);
-    const ys = dots.map((e)=>e[1]);
+  // let sum = 0;
+  // inputs.forEach(v => sum = sum + v);
+  // const result = inputs.filter(v=>inputs.indexOf(v) === inputs.lastIndexOf(v));
 
-    const width = Math.max(...xs) - Math.min(...xs)
-    const height = Math.max(...ys) - Math.min(...ys)
-
-    console.log(width * height);
+  let sum = 0 ; 
+  let result = [];
+  inputs.forEach((v)=>{
+    if(inputs.indexOf(v) === inputs.lastIndexOf(v)) result.push(v);
+    sum += v;
+  })
+  
+  if(sum == 180){
+    if(result.length === 0 ) console.log('Equilateral');
+    else if(result.length === 1) console.log('Isosceles');
+    else console.log('Scalene');
+  }else{
+    console.log('Error');
+  }
 })
-
-
