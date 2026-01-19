@@ -1,35 +1,53 @@
 /* 
-<14215 - 세 막대>
+<24313 - 알고리즘 수업 - 점근적 표기 1>
 ▶︎개요
-- 길이를 줄일 수 있는 막대 a,b,c를 이용하여 최대 둘레를 가지는 삼각형을 만들기
+- O(g(n)) = {f(n) | 모든 n ≥ n0에 대하여 f(n) ≤ c × g(n)인 양의 상수 c와 n0가 존재한다}
+- 즉 입력된 n0보다 크거나 같은 모든 n에 대해서 g(n)이 f(n)보다 큰지를 찾기
+- f(n) = a1n + a0  
+- g(n) = c·n
 
 ▶︎입력
-- 한 줄에 세 막대의 길이를 입력
+- 첫 줄에 a0과 a1을 입력받음
+- 두번째 줄에 양의 정수 c, 세번쨰 줄에 양의 정수 n0를 입력받음
 
 ▶︎출력
-- 길이를 조절해서 만들어진 삼각형의 둘레의 길이를 출력
+- O(g(n))의 정의를 만족하면 1, 아니면 0을 출력한다.
 
  
 ▶︎아이디어
-세 변에 대해서, 가장 긴 변의 길이가 다른 두 변의 길이의 합보다 작아져야 함
-
+- 그래프 상으로 g(n)의 그래프는 n=n0 이후 부터 항상 f(n) 보다 위에 있어야한다.
+- 조건을 만족하기 위해 g(n0) >= f(n0) 이어야 하며, g(n)의 기울기 c가 f의 기울기인 a1와 크거나 같아야 한다.
 
 ▶︎개선방향
 */
 
 const rl = require('readline').createInterface({
-    input : process.stdin, output : process.stdout
+  input: process.stdin, output: process.stdout
 })
 
+var inputs = [];
 rl.on('line',(line)=>{
-  const parts = line.trim().split(' ').map(Number);
-  if(parts.length != 3 || parts.some(Number.isNaN)) return ;
+  inputs.push(line)
+}).on('close', ()=>{
+  const [a1, a0] = inputs[0].split(' ').map(Number)
+  const c = parseInt(inputs[1])
+  const n0 = parseInt(inputs[2])
 
-  const sorted = parts.sort((x, y)=> x-y);
+  console.log('==== 수식 ====')
+  console.log(`>f : ${a1}·n + ${a0} `)
+  console.log(`>g : ${c}·n `)
+  
 
-  if(sorted[2] >= sorted[0] + sorted[1]){
-    console.log((sorted[0] + sorted[1])*2  - 1)
+  if (c < a1){
+    console.log('somehow f is or will be bigger than g')
+    console.log(0)
   }else{
-    console.log(sorted[0] + sorted[1] + sorted[2]);
+    if((a1*n0 + a0) > c*n0){
+      console.log((a1*n0 + a0) > c*n0)
+      console.log('f is bigger than g')      
+      console.log(0)
+    }else{
+      console.log(1)
+    }
   }
 })
