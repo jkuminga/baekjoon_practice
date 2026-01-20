@@ -16,6 +16,9 @@
 - 
 
 ▶︎개선방향
+- 입력 n의 자리수를 구할 때 line 바로 쓰지 않고 Number로 변환 후 다시 String으로 변환 후 길이 구하기
+- map 함수 -> 반목분 사용하기(map은 새 배열 생성 시만 사용하기)
+- 각 자리수 합 구할 때도 새 배열을 만들지 않고 나누기를 이용하여 자리수 추출하기
 */
 
 const rl = require('readline').createInterface({
@@ -24,21 +27,26 @@ const rl = require('readline').createInterface({
 
 
 rl.on('line', (line)=>{
-  const n = parseInt(line.trim());
-  const minIndex = Math.max(0, n-(line.length * 9))
+  const n = Number(line.trim());
+  const digits = String(n).length;
+  const start = Math.max(0, n- 9*digits);
 
-  let m = 0;
-  for(var i = minIndex; i<n; i++){
-    let sum = 0
-    var eachDigit = i.toString().split('').map((e)=>{
-      sum += parseInt(e);      
-    })
+  let answer = 0;
 
-    if(sum + i === n){
-      m = i;
+  for(var i = start; i<n; i++){
+    let sum = i;
+    let x = i;
+
+    while (x > 0){
+      sum += x % 10;
+      x = Math.floor(x /10);
+    }
+
+    if(sum  === n){
+      answer = i;
       break;
     } 
   }
 
-  console.log(m);
+  console.log(answer);
 })
