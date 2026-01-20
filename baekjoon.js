@@ -1,19 +1,17 @@
 /* 
-<2231 - 분해합>
+<19532 - 수학은 비대면강의입니다.>
 ▶︎개요
-- 분해합 : 자연수 N + N의 모든 자리수의 합
-- 자연수 M의 분해합이 N 인 경우 M을 N의 생성자라고 한다.
-- 자연수 N 이 주어졌을 때 N의 가장 작은 생성자를 구하는 프로그램 작성
+- ax + by = c 와 dx + ey = f 를 만족하는 x와 y를 출력하기
 
 ▶︎입력
-- 첫 줄에 자연수 N이 주어짐
+- a,b,c,d,e,f 가 첫줄에 공백으로 주어짐[-999, 999]
+- 단 x,y가 [-999, 999] 의 정수이며 유일한 (x,y)가 존재하도록만 보장됨
 
 ▶︎출력
-- 가장 작은 생성자를 출력(생성자가 없으면 0 출력)
+- x, y
  
 ▶︎아이디어
-- 자연수 N의 범위가 <1000000 이므로 생성자 M의 각자리 수의 합은 54를 넘을 수 없다.
-- 
+
 
 ▶︎개선방향
 - 입력 n의 자리수를 구할 때 line 바로 쓰지 않고 Number로 변환 후 다시 String으로 변환 후 길이 구하기
@@ -27,26 +25,13 @@ const rl = require('readline').createInterface({
 
 
 rl.on('line', (line)=>{
-  const n = Number(line.trim());
-  const digits = String(n).length;
-  const start = Math.max(0, n- 9*digits);
+  const [a,b,c,d,e,f] = line.trim().split(' ').map(Number);
 
-  let answer = 0;
+  const det = a * e - b * d;
 
-  for(var i = start; i<n; i++){
-    let sum = i;
-    let x = i;
+  const x = (c * e - b * f) / det;
+  const y = (a * f - c * d) / det;
 
-    while (x > 0){
-      sum += x % 10;
-      x = Math.floor(x /10);
-    }
+  console.log(`${x} ${y}`)
 
-    if(sum  === n){
-      answer = i;
-      break;
-    } 
-  }
-
-  console.log(answer);
 })
