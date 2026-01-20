@@ -19,35 +19,22 @@
 - 조건을 만족하기 위해 g(n0) >= f(n0) 이어야 하며, g(n)의 기울기 c가 f의 기울기인 a1와 크거나 같아야 한다.
 
 ▶︎개선방향
+- 입력 된 값들을 하나의 코드로 파싱
+- 조건문도 간단하게 변경
 */
 
 const rl = require('readline').createInterface({
-  input: process.stdin, output: process.stdout
-})
+  input: process.stdin,
+  output: process.stdout
+});
 
-var inputs = [];
-rl.on('line',(line)=>{
-  inputs.push(line)
-}).on('close', ()=>{
-  const [a1, a0] = inputs[0].split(' ').map(Number)
-  const c = parseInt(inputs[1])
-  const n0 = parseInt(inputs[2])
+const inputs = [];
+rl.on('line', (line) => {
+  inputs.push(line);
+}).on('close', () => {
+  const data = inputs.join(' ').trim().split(/\s+/).map(Number);
+  const [a1, a0, c, n0] = data;
 
-  console.log('==== 수식 ====')
-  console.log(`>f : ${a1}·n + ${a0} `)
-  console.log(`>g : ${c}·n `)
-  
-
-  if (c < a1){
-    console.log('somehow f is or will be bigger than g')
-    console.log(0)
-  }else{
-    if((a1*n0 + a0) > c*n0){
-      console.log((a1*n0 + a0) > c*n0)
-      console.log('f is bigger than g')      
-      console.log(0)
-    }else{
-      console.log(1)
-    }
-  }
-})
+  const ok = c >= a1 && (a1 * n0 + a0) <= c * n0;
+  console.log(ok ? 1 : 0);
+});
