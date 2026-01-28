@@ -1,37 +1,59 @@
 /* 
-<19532 - 수학은 비대면강의입니다.>
+< 1018 - 체스판 다시 칠하기 > 
 ▶︎개요
-- ax + by = c 와 dx + ey = f 를 만족하는 x와 y를 출력하기
+- MN개의 단위 정사각형으로 나누어져 있는 MxN크기의 보드
+- 이 보드는 흰색/검은색이 랜덤하게 칠해져 있음
+- 8x8로 잘라서 체스판으로 만들고자 할 때, 다시 칠해야 하는 칸의 최소의 개수를 구하자
 
 ▶︎입력
-- a,b,c,d,e,f 가 첫줄에 공백으로 주어짐[-999, 999]
-- 단 x,y가 [-999, 999] 의 정수이며 유일한 (x,y)가 존재하도록만 보장됨
+- 높이(N)와 너비(M) (M,N은 50 이하의 자연수)가 첫 줄에 주어짐
+- 두번째 줄부터 N개의 줄에는 보드의 각 행의 상태가 주어짐
 
 ▶︎출력
-- x, y
- 
-▶︎아이디어
+- 다시 칠해야 하는 칸의 최소 개수를 반환
 
+▶︎아이디어
+- 체스판을 칠하는 두가지 경우(왼쪽 최상단이 흰 or 흑)에 따라 최소 개수를 구함
+- 시작 칸의 색 = 인덱스 값의 합(i+j)이 짝수인 칸의 색
 
 ▶︎개선방향
-- 입력 n의 자리수를 구할 때 line 바로 쓰지 않고 Number로 변환 후 다시 String으로 변환 후 길이 구하기
-- map 함수 -> 반목분 사용하기(map은 새 배열 생성 시만 사용하기)
-- 각 자리수 합 구할 때도 새 배열을 만들지 않고 나누기를 이용하여 자리수 추출하기
 */
-
 const rl = require('readline').createInterface({
   input : process.stdin, output : process.stdout
 })
 
+let answer = Infinity;
+let inputs = []
+
 
 rl.on('line', (line)=>{
-  const [a,b,c,d,e,f] = line.trim().split(' ').map(Number);
+  inputs.push(line);
+}).on('close', ()=>{
+  const [n, m] = inputs[0].trim().split(' ').map(Number);
+  const board = inputs.slice(1).map(line => line.trim())
+  // const board = inputs.slice(1)과 동일
 
-  const det = a * e - b * d;
+  for(let x = 0; x <= n-8; x++){
+    for(let y = 0; y <= m-8; y++){
+      let repaintW = 0;
+      let repaintB = 0;
 
-  const x = (c * e - b * f) / det;
-  const y = (a * f - c * d) / det;
+      for (let i = 0; i < 8; i++){
+        for (let j = 0 ; j< 8; j++){
+          const currentTile = board[x + i][y + j]
+          const isEven = ((i+j)%2 ===0);
 
-  console.log(`${x} ${y}`)
+          const expectedW = isEven ? 'W' : 'B'
+          const expectedB = isEven ? 'B' : 'W'
 
+          if (currentTile !== expectedW) repaintW++;
+          if (currentTile !== expectedB) repaintB++;
+        }
+      }
+
+      answer = Math.min(answer, repaintB, repaintW)
+    }
+  }
+  console.log(answer);
 })
+
