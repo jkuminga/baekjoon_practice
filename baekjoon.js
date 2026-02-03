@@ -22,38 +22,22 @@ const rl = require('readline').createInterface({
   input : process.stdin, output : process.stdout
 })
 
-let answer = Infinity;
-let inputs = []
-
+let N;
 
 rl.on('line', (line)=>{
-  inputs.push(line);
-}).on('close', ()=>{
-  const [n, m] = inputs[0].trim().split(' ').map(Number);
-  const board = inputs.slice(1).map(line => line.trim())
-  // const board = inputs.slice(1)과 동일
+  N = Number(line.trim());
+}).on('close',()=>{
+  let i = 0;
+  let answer;
 
-  for(let x = 0; x <= n-8; x++){
-    for(let y = 0; y <= m-8; y++){
-      let repaintW = 0;
-      let repaintB = 0;
-
-      for (let i = 0; i < 8; i++){
-        for (let j = 0 ; j< 8; j++){
-          const currentTile = board[x + i][y + j]
-          const isEven = ((i+j)%2 ===0);
-
-          const expectedW = isEven ? 'W' : 'B'
-          const expectedB = isEven ? 'B' : 'W'
-
-          if (currentTile !== expectedW) repaintW++;
-          if (currentTile !== expectedB) repaintB++;
-        }
-      }
-
-      answer = Math.min(answer, repaintB, repaintW)
+  while(N > 0){
+    if(i.toString().includes('666')){
+      answer = i;
+      N--;
+      // console.log(`current i is ${i} and current N is ${N} and current answer is ${answer}`)
     }
+    i++
   }
-  console.log(answer);
-})
 
+  console.log(answer)
+})
