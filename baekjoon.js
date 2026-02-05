@@ -1,21 +1,18 @@
 /* 
-< 2839 - 설탕배달 > 
+< 2750 - 수 정렬하기 > 
 ▶︎개요
-- 5/3 kg의 설탕 봉지를 이용하여 최대한 적은 봉지를 들고 Nkg 설탕을 배달하고자 함
+- N개의 수가 주어질 때 그 수들을 오름차순으로 정렬하기
 
 ▶︎입력
-- Nkg
+- 첫 줄에 입력할 수의 개수 N을 입력
+- 두 번째 줄부터 수를 입력하여 N개 입력
 
 ▶︎출력
-- 배달할 봉지의 최소 개수
-- 정확하게 Nkg을 맞출 수 없다면 -1
+- 오름차순으로 정렬된 결과를 한 줄에 하나씩 출력
 
 ▶︎아이디어
-- 최대 5kg의 개수부터 시작해서 딱 맞아떨어지는 최소 봉지의 개수 찾기
 
 ▶︎개선방향
-- 단일 루프문으로 해결하자
-- 5kg 봉지 개수가 최대인 경우부터 반복문이 시작하기 때문에 N과 같아지는 상황에 break 해도 된다.
 
 */
 const rl = require('readline').createInterface({
@@ -23,19 +20,27 @@ const rl = require('readline').createInterface({
 })
 
 
+let inputs = [];
+
 rl.on('line', (line)=>{
-  const N = Number(line.trim());
-
-  let answer = -1; 
-
-  let maxOfFives = Math.floor(N / 5);
-  
-  for(var i = maxOfFives; i >=0; i--){
-    if((N - 5 * i) % 3 === 0){
-      answer = i + ((N - 5 * i ) / 3);
-      break;
+  inputs.push(Number(line.trim()));
+}).on('close', ()=>{
+  const N = Number(inputs[0]);
+  let numbers = inputs.slice(1).map(Number);
+  let output = [];
+  while(numbers.length !== 0){
+    // console.log('lefted numbers are', numbers);
+    let min = Infinity;
+    for(var i = 0 ; i < numbers.length ; i++){
+      if(numbers[i] < min) {
+        // console.log(`${numbers[i]} is Smaller than ${min}`)
+        min = numbers[i]
+      } 
     }
+    // console.log(`current minimum value is ${min}`);
+    output.push(min);
+    numbers = numbers.filter(i => i !== min);
   }
 
-  console.log(answer);
+  output.forEach((v)=>{console.log(v)})
 })
