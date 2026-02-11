@@ -24,35 +24,27 @@ let inputs = []
 rl.on('line', (line)=>{
   inputs.push(line);
 }).on('close', ()=>{
-  const N = inputs[0].trim();
-  const array = inputs.slice(1).map(Number);
+  const [N, k] = inputs[0].split(' ').map(Number);
+  const scores = inputs[1].split(' ').map(Number);
 
-  const result = mergeSort(array);
+  insertionSort(scores);
+  console.log(scores);
 
-  result.forEach((v)=>console.log(v));
+  console.log(scores[k-1]);
 })
 
 
-function mergeSort(arr){
-  if(arr.length <= 1) return arr;
-
-  const mid = Math.floor(arr.length / 2);
-  const left = mergeSort(arr.slice(0, mid));
-  const right = mergeSort(arr.slice(mid));
-
-  return merge(left, right)
-}
-
-function merge(left, right){
-  const result = [];
-  let i = 0 , j = 0;
-
-  while(i < left.length && j < right.length){
-    result.push(
-      left[i] < right[j] ? left[i++] : right[j++]
-    )
+function insertionSort(arr){
+  for(var i = 1; i < arr.length ; i++){
+    let key = arr[i];
+    var j = i-1;
+    for( j = i - 1; j >= 0 ; j--){
+      if(key > arr[j]){
+        arr[j+1] = arr[j];
+      }else{
+        break;
+      } 
+    } 
+    arr[j+1] = key;
   }
-
-  return result.concat(left.slice(i)).concat(right.slice(j));
 }
-
