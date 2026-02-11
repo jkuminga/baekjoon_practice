@@ -19,28 +19,40 @@ const rl = require('readline').createInterface({
   input : process.stdin, output : process.stdout
 })
 
-
-let inputs = [];
+let inputs = []
 
 rl.on('line', (line)=>{
-  inputs.push(Number(line.trim()));
+  inputs.push(line);
 }).on('close', ()=>{
-  const N = Number(inputs[0]);
-  let numbers = inputs.slice(1).map(Number);
-  let output = [];
-  while(numbers.length !== 0){
-    // console.log('lefted numbers are', numbers);
-    let min = Infinity;
-    for(var i = 0 ; i < numbers.length ; i++){
-      if(numbers[i] < min) {
-        // console.log(`${numbers[i]} is Smaller than ${min}`)
-        min = numbers[i]
-      } 
-    }
-    // console.log(`current minimum value is ${min}`);
-    output.push(min);
-    numbers = numbers.filter(i => i !== min);
+  const N = inputs[0].trim();
+  const array = inputs.slice(1).map(Number);
+
+  const result = mergeSort(array);
+
+  result.forEach((v)=>console.log(v));
+})
+
+
+function mergeSort(arr){
+  if(arr.length <= 1) return arr;
+
+  const mid = Math.floor(arr.length / 2);
+  const left = mergeSort(arr.slice(0, mid));
+  const right = mergeSort(arr.slice(mid));
+
+  return merge(left, right)
+}
+
+function merge(left, right){
+  const result = [];
+  let i = 0 , j = 0;
+
+  while(i < left.length && j < right.length){
+    result.push(
+      left[i] < right[j] ? left[i++] : right[j++]
+    )
   }
 
-  output.forEach((v)=>{console.log(v)})
-})
+  return result.concat(left.slice(i)).concat(right.slice(j));
+}
+
