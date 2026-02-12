@@ -16,48 +16,44 @@
 
 */
 const fs = require('fs');
+const data = fs.readFileSync(0, 'utf8').trim().split(/\s+/);
 
-const data = fs.readFileSync(0, 'utf-8').trim().split(/\s+/);
 const n = Number(data[0]);
 
 let arr = new Int32Array(n);
-for(var i = 0 ; i <n ; i++) arr[i] = Number(data[i+1]);
+for(var i = 0 ; i < n ; i ++) arr[i] = Number(data[i + 1]);
 
 let tmp = new Int32Array(n);
 
-for (let width = 1; width < n; width <<= 1) {
-  // n은 입력할 숫자 개수
-  // width : 현재 정렬되어 있다고 가정하는 덩어리의 길이 ex) 2이면 [ab], [cd], [ef] 처럼 두 덩어리 씩 병합된 상태
-  // console.log('----------------------------------------')
-  // console.log(`현재 ${width} 덩어리 만큼 정렬 되어 있습니다.`)
-  for (let left = 0; left < n; left += (width << 1)) {
-    const mid = Math.min(left + width, n);
-    const right = Math.min(left + (width << 1), n);
+// a <<= b (a = a << b) : a를 32비트 2진수로 변환 후 b 만큼 ls 후 저장
+for(let width = 1; width < n; width <<= 1){
+    // width(현재 나누어 진 배열의 덩어리 크기) 2배 후 left에 더 함
+    // 즉 2*width 만큼 건너다니면서 병합하겠다는 의미
+    for(var left = 0 ; left < n ; left += (width<<1)){ 
+        const mid  = Math.min(left+width, n) // left와 right 분리
+        const right = Math.min(left + (width << 2), n) // 오른쪽 배열의 제일 끝 인덱스
 
-    let i = left, j = mid, k = left;
-    // console.log(`현재 왼쪽 인덱스는 ${i}, 오른쪽 시작 인덱스는 ${j} 입니다.`)
-    // console.log(`현재 mid는 ${mid}, right는 ${right}`)
+        // i는 왼쪽 배열 인덱스, j는 오른쪽 배열 인덱스, k는 tmp 배열 삽입 인덱스
+        let i = left, j = mid, k = left;
 
-    while (i < mid && j < right) {
-      if (arr[i] <= arr[j]){
-        // console.log(`${arr[i]} <= ${arr[j]}이므로 ${arr[i]} 먼저 들어가욧`)
-        tmp[k++] = arr[i++];
-      } 
-      else {
-        // console.log(`${arr[i]} > ${arr[j]}이므로 ${arr[j]} 먼저 들어가욧`)
-        tmp[k++] = arr[j++];
-      } 
-      //  console.log(`현재 배열 : ${tmp}`);
+        // 왼쪽 배열 범위 : [left, mid)
+        // 오른쪽 배열 범위 : [mid, right)
+        // 즉 각 인덱스가 범위 사이에 있는 동안 merge 진행
+        while(i < mid && j < right){
+            if(arr[i] <= arr[j]){
+                tmp[k++] = arr[i++];
+            }else{
+                tmp[k++] = arr[j++];
+            }
+        }
+
+        // 남는 값 집어 넣기
+        while(i < mid) tmp[k++] = arr[i++];
+        while(j < right) tmp[k++] = arr[j++];
     }
-    while (i < mid) tmp[k++] = arr[i++]; // 나머지 넣기
-    while (j < right) tmp[k++] = arr[j++];// 나머지 넣기
-  }
-  // arr <-> tmp swap (복사 대신 참조 교체)
-  const swap = arr; arr = tmp; tmp = swap;
-  // console.log(`${width}의 정렬 결과 : ${arr}`)
+    // 복사 대신 깊은 참조(포인터 서로 변경)
+    const swap = arr; arr = tmp; tmp = swap; 
 }
-
-// 출력
-let out = '';
-for (let i = 0; i < n; i++) out += arr[i] + '\n';
+let out  = '';
+for (let i = 0 ; i < n ; i ++) out += arr[i] + '\n';
 process.stdout.write(out);
