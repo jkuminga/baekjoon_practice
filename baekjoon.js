@@ -1,5 +1,5 @@
 /* 
-< 2750 - 수 정렬하기 > 
+< 2751 - 수 정렬하기2 > 
 ▶︎개요
 - N개의 수가 주어질 때 그 수들을 오름차순으로 정렬하기
 
@@ -15,36 +15,49 @@
 ▶︎개선방향
 
 */
-const rl = require('readline').createInterface({
-  input : process.stdin, output : process.stdout
-})
+const fs = require('fs');
 
-let inputs = []
+const data = fs.readFileSync(0, 'utf-8').trim().split(/\s+/);
+const n = Number(data[0]);
 
-rl.on('line', (line)=>{
-  inputs.push(line);
-}).on('close', ()=>{
-  const [N, k] = inputs[0].split(' ').map(Number);
-  const scores = inputs[1].split(' ').map(Number);
+let arr = new Int32Array(n);
+for(var i = 0 ; i <n ; i++) arr[i] = Number(data[i+1]);
 
-  insertionSort(scores);
-  console.log(scores);
+let tmp = new Int32Array(n);
 
-  console.log(scores[k-1]);
-})
+for (let width = 1; width < n; width <<= 1) {
+  // n은 입력할 숫자 개수
+  // width : 현재 정렬되어 있다고 가정하는 덩어리의 길이 ex) 2이면 [ab], [cd], [ef] 처럼 두 덩어리 씩 병합된 상태
+  // console.log('----------------------------------------')
+  // console.log(`현재 ${width} 덩어리 만큼 정렬 되어 있습니다.`)
+  for (let left = 0; left < n; left += (width << 1)) {
+    const mid = Math.min(left + width, n);
+    const right = Math.min(left + (width << 1), n);
 
+    let i = left, j = mid, k = left;
+    // console.log(`현재 왼쪽 인덱스는 ${i}, 오른쪽 시작 인덱스는 ${j} 입니다.`)
+    // console.log(`현재 mid는 ${mid}, right는 ${right}`)
 
-function insertionSort(arr){
-  for(var i = 1; i < arr.length ; i++){
-    let key = arr[i];
-    var j = i-1;
-    for( j = i - 1; j >= 0 ; j--){
-      if(key > arr[j]){
-        arr[j+1] = arr[j];
-      }else{
-        break;
+    while (i < mid && j < right) {
+      if (arr[i] <= arr[j]){
+        // console.log(`${arr[i]} <= ${arr[j]}이므로 ${arr[i]} 먼저 들어가욧`)
+        tmp[k++] = arr[i++];
       } 
-    } 
-    arr[j+1] = key;
+      else {
+        // console.log(`${arr[i]} > ${arr[j]}이므로 ${arr[j]} 먼저 들어가욧`)
+        tmp[k++] = arr[j++];
+      } 
+      //  console.log(`현재 배열 : ${tmp}`);
+    }
+    while (i < mid) tmp[k++] = arr[i++]; // 나머지 넣기
+    while (j < right) tmp[k++] = arr[j++];// 나머지 넣기
   }
+  // arr <-> tmp swap (복사 대신 참조 교체)
+  const swap = arr; arr = tmp; tmp = swap;
+  // console.log(`${width}의 정렬 결과 : ${arr}`)
 }
+
+// 출력
+let out = '';
+for (let i = 0; i < n; i++) out += arr[i] + '\n';
+process.stdout.write(out);
