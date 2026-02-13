@@ -1,65 +1,55 @@
-/* 
-< 11651 - 좌표 정렬하기 2 > 
-▶︎개요
-- N 개 점들을 y 좌표로 오름차순으로 정렬한다. 단 y 좌표 값이 동일하면 x 좌표를 보고 판단한다.
+/* ==============================================================================
+▶︎ 1181 - 단어 정렬
 
-▶︎입력
-- 첫 줄에 자연수 N (N <= 100,000)
-- 두 번째 줄부터 N개의 좌표가 주어진다.
+▶︎ 개요
+- 알파벳 소문자로 이루어진 N개의 단어가 들어오면 길이 순으로 정렬하고 길이가 같으면 사전으로 정렬하는 사전 프로그램 작성
+- 중복된 단어는 하나만 남기고 제거해야 함
 
-▶︎출력
-- 첫 줄부터 나열된 좌표들을 하나씩 출력한다.
+▶︎ 입력
+- 첫 줄에 단어의 개수 N (N <= 20,000)
+- 두 번째 줄부터 N개의 단어가 주어진다.(단어는 소문자이며 길이가 50을 넘지 않는다.)
+ 
+▶︎ 출력
+- 첫 줄부터 조건대로 나열된 단어들을 출력한다.
 
-▶︎아이디어
+▶︎ 아이디어
+- 단어의 길이가 최대 50이므로 동일한 길이의 단어가 들어갈 경우가 더 많을 것
+  -> 길이가 같은 단어 정렬부터 생각해보자.
 
-▶︎개선방향
-
-*/
+▶︎ 개선방향
+============================================================================== */
+// 1. 배열 전처리
 const fs = require('fs');
-const data = fs.readFileSync(0, 'utf8').trim().split(/\s+/).map(Number);
-const n = data[0];
+const data = fs.readFileSync(0, 'utf8').trim().split(/\s+/);
+let n = Number(data[0]);
 
 let arr = [];
-for(let i = 1; i < data.length ; i += 2) arr.push([data[i], data[i+1]]);
+for(var i = 0 ; i < n ; i ++) arr.push(data[i + 1]);
 
-console.log(arr);
+// 중복 없애기
+const arrToSet = new Set(arr);
+let uniqueArr = [...arrToSet];
+n = uniqueArr.length;
 
-let tmp = new Array(n);
+// 빈 배열 생성 - 각 요소에는 길이가 n인 단어들이 들어갈 것
+const tmp = Array.from({length: 50}, ()=>[]);
 
-for(var width = 1; width < n; width *= 2){
-  console.log(`width ${width} process started`);
-  for(var left = 0; left < n; left += width * 2){
-    const mid = Math.min(n, left + width);
-    const right = Math.min(n, left+ width*2);
-
-    let i = left, j = mid, k = left;
-    console.log(`current left : ${left}, mid : ${mid}, right : ${right}`)
-    while(i < mid && j < right){
-      if(arr[i][1] < arr[j][1]){
-        console.log(`y value ${arr[i][1]} is smaller than ${arr[j][1]}`)
-        tmp[k++] = arr[i++];
-      }else if(arr[i][1] === arr[j][1]){
-        console.log(`y value ${arr[i][1]} is same with ${arr[j][1]}`)
-        if(arr[i][0] < arr[j][0]){
-          console.log(`x valaue ${arr[i][0]} is smaller than ${arr[j][0]}`)
-          tmp[k++] = arr[i++];
-        }else{
-          console.log(`x valaue ${arr[i][0]} is bigger than ${arr[j][0]}`)
-          tmp[k++] = arr[j++];
-        }
-      }else{
-        console.log(`y value ${arr[i][1]} is bigger than ${arr[j][1]}`)
-        tmp[k++] = arr[j++];
-      }
-    }
-    while(i < mid) tmp[k++] = arr[i++];
-    while(j < right) tmp[k++] = arr[j++];
-  }
-  let swap = arr; arr = tmp; tmp = swap;
-  // console.log(`current sorted array is ${arr} and size is ${arr.length} `)
-  console.log(arr);
+for(var i = 0; i < n ; i ++){
+  tmp[uniqueArr[i].length - 1].push(uniqueArr[i]);
 }
 
-let out = '';
-for(var i = 0 ; i < n; i ++) out += arr[i][0] + ' ' +arr[i][1]+ '\n';
+for(var i = 0; i < 50 ; i++){
+  if(tmp[i].length !== null) tmp[i].sort();
+}
+
+
+let out = ''
+for(var i = 0 ; i < 50; i++){
+  if(tmp[i].length !== null){
+    for(var j = 0 ; j < tmp[i].length ; j++){
+      out += tmp[i][j] + '\n';
+    }
+  }
+}
+
 process.stdout.write(out);
