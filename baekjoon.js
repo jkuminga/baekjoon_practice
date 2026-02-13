@@ -1,16 +1,16 @@
 /* 
-< 11650 - 좌표 정렬하기 > 
+< 11651 - 좌표 정렬하기 2 > 
 ▶︎개요
-- 수가 주어지면, 각 자리수를 내림차순으로 정렬해보자.
+- N 개 점들을 y 좌표로 오름차순으로 정렬한다. 단 y 좌표 값이 동일하면 x 좌표를 보고 판단한다.
 
 ▶︎입력
-- 첫 줄에 자연수 N (N <= 1,000,000,000)
+- 첫 줄에 자연수 N (N <= 100,000)
+- 두 번째 줄부터 N개의 좌표가 주어진다.
 
 ▶︎출력
-- 첫 줄에 내림차순으로 정렬한 수 출력
+- 첫 줄부터 나열된 좌표들을 하나씩 출력한다.
 
 ▶︎아이디어
-- N이 최대 10억이므로, 정렬해야 할 수의 최대 길이는 10이므로 o(n^2)을 사용해도 2초 안에 가능
 
 ▶︎개선방향
 
@@ -35,20 +35,20 @@ for(var width = 1; width < n; width *= 2){
     let i = left, j = mid, k = left;
     console.log(`current left : ${left}, mid : ${mid}, right : ${right}`)
     while(i < mid && j < right){
-      if(arr[i][0] < arr[j][0]){
-        console.log(`x value ${arr[i][0]} is smaller than ${arr[j][0]}`)
+      if(arr[i][1] < arr[j][1]){
+        console.log(`y value ${arr[i][1]} is smaller than ${arr[j][1]}`)
         tmp[k++] = arr[i++];
-      }else if(arr[i][0] === arr[j][0]){
-        console.log(`x value ${arr[i][0]} is same with ${arr[j][0]}`)
-        if(arr[i][1] < arr[j][1]){
-          console.log(`y valaue ${arr[i][1]} is smaller than ${arr[j][1]}`)
+      }else if(arr[i][1] === arr[j][1]){
+        console.log(`y value ${arr[i][1]} is same with ${arr[j][1]}`)
+        if(arr[i][0] < arr[j][0]){
+          console.log(`x valaue ${arr[i][0]} is smaller than ${arr[j][0]}`)
           tmp[k++] = arr[i++];
         }else{
-          console.log(`y valaue ${arr[i][1]} is bigger than ${arr[j][1]}`)
+          console.log(`x valaue ${arr[i][0]} is bigger than ${arr[j][0]}`)
           tmp[k++] = arr[j++];
         }
       }else{
-        console.log(`x value ${arr[i][0]} is bigger than ${arr[j][0]}`)
+        console.log(`y value ${arr[i][1]} is bigger than ${arr[j][1]}`)
         tmp[k++] = arr[j++];
       }
     }
