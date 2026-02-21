@@ -1,18 +1,18 @@
 /* ==============================================================================
-▶︎ 10815 - 숫자 카드
+▶︎ 14425 - 문자열 집합
 
 ▶︎ 개요
-- N개의 숫자 카드를 가지고 있고, 각 숫자 카드에는 정수 하나가 적혀 있다.
-- 정수 M개가 주어졌을 때, 그 숫자를 가지고 있는지 아닌지를 구하는 프로그램을 만들자.
+- N개의 문자열로 이루어진 집합 S가 주어진다.
+- 입력으로 주어지는 M개의 문자열 중에서 집합 S에 포함되어 있는 것이 몇 개인지 구하자
 
 ▶︎ 입력
-- 첫째 줄에 가지고 있는 카드의 개수 N[1, 500,000] 
-- 두번째 줄에 각 숫자 카드에 적힌 정수가 N개 주어짐 [-10,000,000, 10,000,000](중복 된 카드 x)
-- 셋째 줄에는 M이 주어짐[1, 500,000]
-- 네번째 줄에는 가지고 있는 숫자인지 아닌지 구할 정수 M개가 주어짐 [-10,000,000, 10,000,000]
- 
+- 첫째 줄에는 문자열의 개수 N과 M이 주어진다. [1, 10,000]
+- 다음 N개의 줄에는 S에 포함된 문자열들이 주어진다.
+- 그 다음 M개 줄에는 검사해야 하는 문자열들이 주어진다.
+- 각 문자열들은 중복은 없고 길이는 최대 500이다.
+
 ▶︎ 출력
-- M개의 수에 대해서 각 수가 가지고 있는 카드이면 1, 아니면 0을 공백으로 구분해 출력한다.
+- 첫째 줄에 M개의 문자열 중에 총 몇 개의 집합 S에 포함되어 있는지 출력한다.
 
 ▶︎ 아이디어
 1. 공간 복잡도를 고려했을 때 - 가지고 있는 배열을 M번 순회한다. 즉 O(M*N)
@@ -20,19 +20,18 @@
 ============================================================================== */
 
 const fs = require('fs');
-// 개션1 : trim() 사용
-const data = fs.readFileSync(0, 'utf8').split(/\s+/).map(Number);
+const data = fs.readFileSync(0, 'utf8').trim().split(/\s+/);
 
-const N = data[0];
-const myCards = data.slice(1, N+1);
-const M = data[N + 1];
-const targetCards = data.slice(N+2, N+M+2);
+const N = Number(data[0]);
+const M = Number(data[1]);
+const S = data.slice(2, N+2);
+const target = data.slice(N + 2);
 
-// 개선2 : map() -> set() 사용
-let listToMap = new Set(myCards);
+const setS = new Set(S);
 
-const out = [];
-for (var i = 0 ; i < M; i++) out.push(listToMap.has(targetCards[i]) ? 1 : 0);
+let ans = 0;
+for(var i = 0 ; i < M; i++) {
+  if(setS.has(target[i])) ans++;
+}
 
-// 개선3 : 문자열 사용x -> 배열에 넣고 join();
-console.log(out.join(' '));
+console.log(ans);
