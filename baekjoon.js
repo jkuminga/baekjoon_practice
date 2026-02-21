@@ -17,11 +17,10 @@
 ▶︎ 아이디어
 1. 공간 복잡도를 고려했을 때 - 가지고 있는 배열을 M번 순회한다. 즉 O(M*N)
 2. 시간 복잡도를 고려했을 때 - 가지고 있는 정수에 대해서 딕셔너리를 만들어서 value로 검색한다.
-
-▶︎ 개선방향
 ============================================================================== */
 
 const fs = require('fs');
+// 개션1 : trim() 사용
 const data = fs.readFileSync(0, 'utf8').split(/\s+/).map(Number);
 
 const N = data[0];
@@ -29,18 +28,11 @@ const myCards = data.slice(1, N+1);
 const M = data[N + 1];
 const targetCards = data.slice(N+2, N+M+2);
 
-let listToMap = new Map();
+// 개선2 : map() -> set() 사용
+let listToMap = new Set(myCards);
 
-for(var i = 0 ; i < N; i ++){
-  listToMap.set(myCards[i], 1);
-}
+const out = [];
+for (var i = 0 ; i < M; i++) out.push(listToMap.has(targetCards[i]) ? 1 : 0);
 
-let ans = '';
-
-for(var i = 0 ; i < M - 1 ; i++){
-  ans += `${listToMap.get(targetCards[i]) === 1 ? 1 : 0} `
-}
-
-ans += `${listToMap.get(targetCards[M-1]) === 1 ? 1 : 0}`
-
-console.log(ans);
+// 개선3 : 문자열 사용x -> 배열에 넣고 join();
+console.log(out.join(' '));
