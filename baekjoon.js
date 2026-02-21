@@ -19,35 +19,25 @@
 ============================================================================== */
 
 const fs = require('fs');
-const data = fs.readFileSync(0, 'utf8').split(/\s+/);
+const data = fs.readFileSync(0, 'utf8').trim().split(/\s+/);
 
 const n = Number(data[0]);
+const numbers = data.slice(1).map(Number);
 
-let arr = [];
-for(var i = 0; i < n; i++) arr.push([Number(data[2*i + 1]), data[2*i + 2]]);
+const numbersToSet = new Set(numbers);
+let uniqueNumbers = [...numbersToSet];
+uniqueNumbers.sort((a,b) => a-b);
 
-let tmp = new Array(n);
-
-for(let width = 1; width < n; width *=2){
-  for(let left = 0; left < n; left += width*2){
-    const mid = Math.min(left+width, n);
-    const right = Math.min(left+(2*width), n);
-
-    let i = left, j = mid, k = left;
-
-    while(i < mid && j < right){
-      if(arr[i][0] <= arr[j][0]){
-        tmp[k++] = arr[i++];
-      }else{
-        tmp[k++] = arr[j++];
-      }
-    }
-    while(i < mid) tmp[k++] = arr[i++];
-    while(j < right) tmp[k++] = arr[j++];
-  }
-  const swap = arr; arr= tmp; tmp = swap;
+const valueToIdx = new Map();
+for (let i = 0; i < uniqueNumbers.length; i++) {
+  valueToIdx.set(uniqueNumbers[i], i);
 }
 
-let out = '';
-for(var i = 0 ; i < n - 1; i++) out += arr[i].join(' ') + '\n';
-console.log(out + arr[n-1].join(' '));
+
+const result = new Array(n);
+
+for(var i = 0; i < n ; i++){
+  result[i] = valueToIdx.get(numbers[i]);
+}
+
+process.stdout.write(result.join(' '));
