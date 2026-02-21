@@ -1,43 +1,46 @@
 /* ==============================================================================
-▶︎ 10814 - 나이순 정렬
+▶︎ 10815 - 숫자 카드
 
 ▶︎ 개요
-- 나이와 이름이 가입한 순서대로 주어질 때 나이는 증가하는 순으로, 나이가 같으면 가입한 사람이 먼저 오는 순서로 정렬
+- N개의 숫자 카드를 가지고 있고, 각 숫자 카드에는 정수 하나가 적혀 있다.
+- 정수 M개가 주어졌을 때, 그 숫자를 가지고 있는지 아닌지를 구하는 프로그램을 만들자.
 
 ▶︎ 입력
-- 첫 줄에 회원 수 N이 주어진다.(N <= 500,000)
-- 두 번째 줄부터 N명의 회원의 나이와 이름이 공백으로 구분되어 주어진다.
-  (1<= 나이 <= 200, 이름은 알파벳 대소문자)
+- 첫째 줄에 가지고 있는 카드의 개수 N[1, 500,000] 
+- 두번째 줄에 각 숫자 카드에 적힌 정수가 N개 주어짐 [-10,000,000, 10,000,000](중복 된 카드 x)
+- 셋째 줄에는 M이 주어짐[1, 500,000]
+- 네번째 줄에는 가지고 있는 숫자인지 아닌지 구할 정수 M개가 주어짐 [-10,000,000, 10,000,000]
  
 ▶︎ 출력
-- 첫 줄부터 n개의 줄에 걸쳐 온라인 저지 회원을 나이순, 나이가 같으면 가입한 순으로 한 줄에 한명씩 출력
+- M개의 수에 대해서 각 수가 가지고 있는 카드이면 1, 아니면 0을 공백으로 구분해 출력한다.
 
 ▶︎ 아이디어
-- 안정성이 보장되는 정렬(병합, 버블, 삽입) 사용하자.
+1. 공간 복잡도를 고려했을 때 - 가지고 있는 배열을 M번 순회한다. 즉 O(M*N)
+2. 시간 복잡도를 고려했을 때 - 가지고 있는 정수에 대해서 딕셔너리를 만들어서 value로 검색한다.
 
 ▶︎ 개선방향
 ============================================================================== */
 
 const fs = require('fs');
-const data = fs.readFileSync(0, 'utf8').trim().split(/\s+/);
+const data = fs.readFileSync(0, 'utf8').split(/\s+/).map(Number);
 
-const n = Number(data[0]);
-const numbers = data.slice(1).map(Number);
+const N = data[0];
+const myCards = data.slice(1, N+1);
+const M = data[N + 1];
+const targetCards = data.slice(N+2, N+M+2);
 
-const numbersToSet = new Set(numbers);
-let uniqueNumbers = [...numbersToSet];
-uniqueNumbers.sort((a,b) => a-b);
+let listToMap = new Map();
 
-const valueToIdx = new Map();
-for (let i = 0; i < uniqueNumbers.length; i++) {
-  valueToIdx.set(uniqueNumbers[i], i);
+for(var i = 0 ; i < N; i ++){
+  listToMap.set(myCards[i], 1);
 }
 
+let ans = '';
 
-const result = new Array(n);
-
-for(var i = 0; i < n ; i++){
-  result[i] = valueToIdx.get(numbers[i]);
+for(var i = 0 ; i < M - 1 ; i++){
+  ans += `${listToMap.get(targetCards[i]) === 1 ? 1 : 0} `
 }
 
-process.stdout.write(result.join(' '));
+ans += `${listToMap.get(targetCards[M-1]) === 1 ? 1 : 0}`
+
+console.log(ans);
