@@ -1,40 +1,47 @@
 /* ==============================================================================
-▶︎ 1620 - 나는야 포켓몬 마스터 이다솜
+▶︎ 10816 - 숫자 카드 2
 
 ▶︎ 개요
-- 포켓몬 도감을 받고 문제를 맞추는 프로그램을 만들자.
+가지고 있는 N개의 숫자 카드에 대해서, M개의 카드가 주어 졌을 때, 주어진 카드 중 몇 개의 카드를 들고 있는지 구하는 프로그램 작성
 
 ▶︎ 입력
-- 첫째 줄에는 도감에 등록된 포켓몬의 개수 N개와 내가 맞춰야 하는 문제 개수 M이 주어짐[1, 100,000]
-- 두번째 줄부터 N개의 포켓몬이 등록됨(모두 영어, 첫 글자만 대문자, 최대길이는 20, 각 인덱스가 포켓몬 번호, 1부터 시작)
-- 그 다음 줄 부터 M개의 줄에 문제 입력, 숫자 혹은 포켓몬 이름(숫자는 N보다 작고, 포켓몬이름은 반드시 도감 안에 존재함)
+- 첫째 줄에는 가지고 있는 카드의 개수 N이 주어짐[1, 500,000]
+- 둘째 줄에는 카드에 적혀있는 정수가 주어짐[-10,000,000, 10,000,000]
+- 셋째 줄에는 M이 주어짐[1, 500,000]
+- 넷째 주에는 가지고 있는 카드인 지 구해야 할 M개의 정수가 주어짐[-10,000,000, 10,000,000]
 
 ▶︎ 출력
-- 첫째 줄부터 차례대로 각 문제에 대한 답을 출력
-  -> 숫자면 숫자에 해당하는 포켓몬 이름 / 이름이면 이름에 해당하는 포켓몬 숫자
+- 첫째 줄에 입력으로 주어진 M개의 수에 대해서, 각 수가 적힌 숫자 카드를 몇 개 가지고 있는지를 공백으로 구분
 
 ▶︎ 아이디어
+- 숫자 카드 1과 다르게, 똑같은 수의 숫자 카드를 가지고 있을 수 있음
 
 ============================================================================== */
 const fs = require('fs');
-const data = fs.readFileSync(0, 'utf8').trim().split(/\s+/);
+const data = fs.readFileSync(0, 'utf8').trim().split(/\s+/).map(Number);
 
-const pokemonCount = Number(data[0]);
-const questionCount = Number(data[1]);
-const pokedex = data.slice(2, pokemonCount+2);
-const questions = data.slice(pokemonCount+2)
+const N = data[0];
+const myNumbers = data.slice(1, N+1)
+const M = data[N+1];
+const targetNumbers = data.slice(N+2);
 
-const listToMap = new Map();
-for(var i = 0 ; i < pokemonCount ; i ++) listToMap.set(pokedex[i], i+1);
+const have = new Map();
 
 
-for(var i = 0 ; i < questionCount; i++){
-  // 문제가 이름을 물어보는 거면 숫자를 출력
-  if(isNaN(Number(questions[i]))){
-    console.log(listToMap.get(questions[i]));
-  // 문제가 숫자를 물어보는 거면 이름을 출력
+for(var myNum of myNumbers) {
+  if(have.has(myNum)){
+    have.set(myNum, have.get(myNum) + 1);
   }else{
-    console.log(pokedex[questions[i] - 1]);
+    have.set(myNum, 1);
   }
 }
 
+const ans = [];
+for(var i = 0; i < M ; i ++){
+  if(have.has(targetNumbers[i])) {
+    ans.push(have.get(targetNumbers[i]));
+  }
+  else ans.push(0);
+}
+
+console.log(ans.join(' '));
