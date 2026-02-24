@@ -1,47 +1,33 @@
 /* ==============================================================================
-▶︎ 10816 - 숫자 카드 2
+▶︎ 1764 - 듣보잡
 
 ▶︎ 개요
-가지고 있는 N개의 숫자 카드에 대해서, M개의 카드가 주어 졌을 때, 주어진 카드 중 몇 개의 카드를 들고 있는지 구하는 프로그램 작성
+듣도 못한 사람과 보도 못한 사람들의 명단을 받아서, 듣도 보도 못한 사람을 추출하자.
 
 ▶︎ 입력
-- 첫째 줄에는 가지고 있는 카드의 개수 N이 주어짐[1, 500,000]
-- 둘째 줄에는 카드에 적혀있는 정수가 주어짐[-10,000,000, 10,000,000]
-- 셋째 줄에는 M이 주어짐[1, 500,000]
-- 넷째 주에는 가지고 있는 카드인 지 구해야 할 M개의 정수가 주어짐[-10,000,000, 10,000,000]
+- 첫째 줄에는 듣도 못한 사람의 수 N과 보도 못한 사람의 수 M이 공백으로 주어진다.[1, 500,000]
+- 둘째 줄부터 듣도 못한 사람 N명의 이름이 각 줄에 주어진다.
+- 그 다음 줄부터 보도 못한 사람 M명의 이름이 각 줄에 주어진다.
 
 ▶︎ 출력
-- 첫째 줄에 입력으로 주어진 M개의 수에 대해서, 각 수가 적힌 숫자 카드를 몇 개 가지고 있는지를 공백으로 구분
+- 첫째 줄부터 듣도 보도 못한 사람의 이름이 사전순으로 주어진다.
 
 ▶︎ 아이디어
-- 숫자 카드 1과 다르게, 똑같은 수의 숫자 카드를 가지고 있을 수 있음
-
 ============================================================================== */
 const fs = require('fs');
-const data = fs.readFileSync(0, 'utf8').trim().split(/\s+/).map(Number);
+const data = fs.readFileSync(0, 'utf8').trim().split(/\s+/)
 
-const N = data[0];
-const myNumbers = data.slice(1, N+1)
-const M = data[N+1];
-const targetNumbers = data.slice(N+2);
-
-const have = new Map();
-
-
-for(var myNum of myNumbers) {
-  if(have.has(myNum)){
-    have.set(myNum, have.get(myNum) + 1);
-  }else{
-    have.set(myNum, 1);
-  }
-}
+const N = Number(data[0]);
+const M = Number(data[1]);
+const unheard = new Set();
+for(var i = 0; i < N; i++) unheard.add(data[i+2]);
+const unseen = data.slice(N+2);
 
 const ans = [];
-for(var i = 0; i < M ; i ++){
-  if(have.has(targetNumbers[i])) {
-    ans.push(have.get(targetNumbers[i]));
-  }
-  else ans.push(0);
+for(var u of unseen){
+  if(unheard.has(u)) ans.push(u);
 }
 
-console.log(ans.join(' '));
+console.log(ans.length);
+console.log(ans.sort().join('\n'));
+
