@@ -1,30 +1,26 @@
 /* ==============================================================================
-▶︎ 1934 - 최소공배수(리펙토링)
+▶︎ 1735 - 분수 합
 
 ▶︎ 개요
-두 자연수 A,B가 주어졌을 때, A와 B의 최소 공배수를 구하는 프로그램을 작성하시오.
+두 분수가 주어졌을 때, 그 합을 기약분수 형태로 구하는 프로그램 작성
+(기약분수 = 더 이상 약분되지 않는 분수를 의미함)
 
 ▶︎ 입력
-- 첫째 줄에 테스트 케이스의 개수 T[1, 1000]이 주어진다.
-- 두번째 줄 부터 T개 줄 만큼 A, B가 각 줄에 공백으로 구분되어 주어진다.[1, 45,000]
+- 첫째 줄에 첫번째 분수의 분자와 분모가 주어진다. (입력되는 수는 모두 30,000 이하 자연수)
+- 둘째 줄에 두번쨰 분수의 분자와 분모가 주어진다.
 
 ▶︎ 출력
-- 각 줄마다 A,B의 최소공배수를 한 줄에 하나씩 출력한다.
+- 구한 기약 분수의 분자와 분모를 공백으로 구분하여 출력한다.
 
 ▶︎ 아이디어
-핵심 : 최소공배수 = 두 수의 곱 / 최대공약수
-뉴클리드 호제법 사용 : A,B의 최대공약수는 B와 A를 B로 나눈 나머지의 최대 공약수와 같다.
 
 ============================================================================== */
 const fs = require('fs');
-const data = fs.readFileSync(0, 'utf8').trim().split(/\s+/).map(Number);
+const [A,B,C,D] = fs.readFileSync(0, 'utf8').trim().split(/\s+/).map(Number);
 
-const T = data[0];
-let idx = 1;
 
 // 뉴클리드 호제법을 이용한 최대공약수(gcd) 구하기
 // 뉴클리드 호제법 이해
-
 function gcd(a, b){
   while(b !== 0){
     const t = a % b; // A를 B로 나눈 나머지
@@ -34,15 +30,8 @@ function gcd(a, b){
   return a;
 }
 
-let out = [];
-for(let i = 0 ; i<T; i++){
-  const A = data[idx++]
-  const B = data[idx++]
+let numerator = A*D + C *B
+let denominator = B * D
+let g = gcd(denominator, numerator);
 
-  const g = gcd(A,B) // A,B의 최대 공약수
-  const l = (A / l) * B;
-
-  out.push(String(l))
-}
-
-console.log(out.join('\n'));
+console.log(numerator/g, denominator/g);
