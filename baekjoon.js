@@ -1,5 +1,5 @@
 /* ==============================================================================
-▶︎ 1934 - 최소공배수
+▶︎ 1934 - 최소공배수(리펙토링)
 
 ▶︎ 개요
 두 자연수 A,B가 주어졌을 때, A와 B의 최소 공배수를 구하는 프로그램을 작성하시오.
@@ -12,36 +12,37 @@
 - 각 줄마다 A,B의 최소공배수를 한 줄에 하나씩 출력한다.
 
 ▶︎ 아이디어
-1) A,B 중 하나를 i배수로 늘리면서 다른 하나가 그 수와 같이 지는 경우를 찾는다.
-2) 최대 공약수를 구해서 A*B를 최대 공약수로 나눈다.
+핵심 : 최소공배수 = 두 수의 곱 / 최대공약수
+뉴클리드 호제법 사용 : A,B의 최대공약수는 B와 A를 B로 나눈 나머지의 최대 공약수와 같다.
+
 ============================================================================== */
 const fs = require('fs');
 const data = fs.readFileSync(0, 'utf8').trim().split(/\s+/).map(Number);
 
 const T = data[0];
+let idx = 1;
 
-for(var i = 0 ; i < T; i++){
-  let [A,B] = [data[2*i + 1], data[2*i + 2]];
+// 뉴클리드 호제법을 이용한 최대공약수(gcd) 구하기
+// 뉴클리드 호제법 이해
 
-  // 약수 먼저 구하기
-  let aFactors = [], bFactors = [];
-  for(var j = 0; j <= A; j++ ){
-    if(A % j === 0) aFactors.push(j);
+function gcd(a, b){
+  while(b !== 0){
+    const t = a % b; // A를 B로 나눈 나머지
+    a = b; // b와
+    b = t; // A를 B로 나눈 나머지의 최대공약수를 구하자.
   }
-  for(var j = 0 ; j <=B ; j++){
-    if(B % j === 0) bFactors.push(j);
-  }
-
-  aFactors.sort((a,b)=> (b-a));
-  bFactors = new Set(bFactors.sort((a,b)=> (b-a)));
-
-
-  let maxFactor;
-  // 최대 공약수 구하기
-  for(var j = aFactors.length -1; j >= 0; j--){
-    if(bFactors.has(aFactors[j])) maxFactor = aFactors[j];
-  }
-
-
-  console.log(A*B / maxFactor);
+  return a;
 }
+
+let out = [];
+for(let i = 0 ; i<T; i++){
+  const A = data[idx++]
+  const B = data[idx++]
+
+  const g = gcd(A,B) // A,B의 최대 공약수
+  const l = (A / l) * B;
+
+  out.push(String(l))
+}
+
+console.log(out.join('\n'));
