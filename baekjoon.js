@@ -1,37 +1,61 @@
 /* ==============================================================================
-▶︎ 1735 - 분수 합
+▶︎ 2485 - 가로수
 
 ▶︎ 개요
-두 분수가 주어졌을 때, 그 합을 기약분수 형태로 구하는 프로그램 작성
-(기약분수 = 더 이상 약분되지 않는 분수를 의미함)
+직선의 도로 위에 임의의 간격으로 가로수가 심어져있다. 가로수 들이 모두 같은 간격을 가지도록
+추가로 가로수를 심고자 한다. 가로수들의 간격이 갖도록 하기 위해 심어야 하는 가로수의 최소 양을 구하자.
 
 ▶︎ 입력
-- 첫째 줄에 첫번째 분수의 분자와 분모가 주어진다. (입력되는 수는 모두 30,000 이하 자연수)
-- 둘째 줄에 두번쨰 분수의 분자와 분모가 주어진다.
+- 첫번째 줄에 이미 심어져 있는 가로수의 개수 N이 주어진다.[3, 100,000]
+- 두번째 줄부터 N개의 줄만큼 심어져 있는 가로수의 위치를 나타내는 정수가 주어진다.[1,000,000,000]
+  (가로수는 기준점으로 부터 가까운 순으로 주어진다.)
 
 ▶︎ 출력
-- 구한 기약 분수의 분자와 분모를 공백으로 구분하여 출력한다.
+- 가로수의 최소수를 출력하자
 
 ▶︎ 아이디어
+- 가로수 간의 간격을 모두 구하자. 이 간격을 동일하게 나눌 수 있는 최소 간격 G를 구하자.
+   -> 이 때의 G는 모든 간격들 간의 최대 공약수와 동일하다.
 
 ============================================================================== */
 const fs = require('fs');
-const [A,B,C,D] = fs.readFileSync(0, 'utf8').trim().split(/\s+/).map(Number);
+const data = fs.readFileSync(0, 'utf8').trim().split(/\s+/).map(Number);
 
+const N = data[0];
+const trees = data.slice(1,);
 
-// 뉴클리드 호제법을 이용한 최대공약수(gcd) 구하기
-// 뉴클리드 호제법 이해
-function gcd(a, b){
+// console.log(`Tree count : ${N}`);
+// console.log(`Tree coordinate : ${trees}`)
+
+// 가로수 사이 간격 모두 구하기
+const distances = [];
+for(let i = 1; i < N ; i++) distances.push(trees[i] - trees[i-1]);
+
+// console.log(`every distances are ${distances}`);
+
+// 최대공약수 구하는 함수
+function gcd(a,b){
   while(b !== 0){
-    const t = a % b; // A를 B로 나눈 나머지
-    a = b; // b와
-    b = t; // A를 B로 나눈 나머지의 최대공약수를 구하자.
+    t = a % b;
+    a = b;
+    b = t
   }
   return a;
 }
 
-let numerator = A*D + C *B
-let denominator = B * D
-let g = gcd(denominator, numerator);
+// 거리 간 최소 공약수 구하기
+let G = distances[0];
+for(let i = 1; i < distances.length ; i++){
+  // console.log(`G between ${G} and ${distances[i]} is ${gcd(G, distances[i])}`)
+  G = gcd(G, distances[i]);
+}
 
-console.log(numerator/g, denominator/g);
+// console.log(G);
+
+// 심어야 하는 나무 구하기
+let ans = 0;
+for(let i = 0 ; i < distances.length ; i++){
+  ans += (distances[i] / G) - 1;
+}
+
+console.log(ans);
