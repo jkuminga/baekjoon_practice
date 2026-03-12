@@ -17,41 +17,34 @@
 ▶︎ 출력
 - 출력을 요구하는 명령이 주어질 때 마다 명령의 결과를 한 줄에 하나씩 출력한다.
 
-▶︎ 아이디어
-
+▶︎ 리팩토링 요소
+- 현재는 토큰별로 받고 있으나, 1번 명령 떄문이라도 라인 별로 받아서 사용하는 것이 좋음
+- 테스트 케이스 N에 대해서는 건드리지 않기
 ============================================================================== */
 const fs = require('fs');
-const data = fs.readFileSync(0, 'utf8').trim().split(/\s+/).map(Number);
+// 변경 사항 1) 토큰 대신 라인 별로 받기
+const data = fs.readFileSync(0, 'utf8').trim().split('\n');
 
-let N = data[0];
-const commands = data.slice(1);
+// 변경 사항 2) 
+const N = Number(data[0]);
 
 const stack = [];
 const result = [];
 
-let i  = 0 ;
-while(i < N){
-  if(commands[i] === 1){
-    i++;
-    N++;
-    stack.push(commands[i]);
-  }else if(commands[i] === 2){
-    if(stack.length !== 0) result.push(stack.pop())
-    else result.push(-1);
-  }
-  else if(commands[i] === 3){
+for(let i = 1 ; i <= N ; i++){
+  const [command, value] = data[i].split(' ').map(Number);
+
+  if(command === 1){
+    stack.push(value)
+  }else if(command === 2){
+    result.push(stack.length ? stack.pop() : -1);
+  }else if(command === 3){
     result.push(stack.length);
+  }else if(command === 4){
+    result.push(stack.length === 0 ? 1 : 0);
+  }else if(command === 5){
+    result.push(stack.length ? stack[stack.length - 1] : -1);
   }
-  else if(commands[i] === 4){
-    if(stack.length === 0) result.push(1)
-    else result.push(0);
-  }
-  else{
-    if(stack.length !== 0) result.push(stack[stack.length - 1]);
-    else result.push(-1);
-  }
-  i++
 }
 
 console.log(result.join('\n'));
-
