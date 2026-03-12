@@ -1,32 +1,57 @@
 /* ==============================================================================
-▶︎ 13909 - 창문 닫기
+▶︎ 28278 - 스택2
 
 ▶︎ 개요
-N개의 창문과 N명의 사람이 있다.
-1번째 사람은 1의 배수 번쨰 창문들을 열려있으면 닫고 닫혀 있으면 연다.
-2번째 사람은 2의 배수 번째 창문들을 열려있으면 닫고 닫혀 있으면 연다.
-이러한 행동을 N 번째 사람 까지 진행한 후 열려 있는 창문의 개수를 구하라.
+스택을 구현한 다음, 다음 명령들을 처리하는 프로그램을 작성하라
+명령 1) 입력 1 X : 정수 X를 스택에 넣는다.
+명령 2) 입력 2 : 스택에 정수가 있다면 맨 위의 정수를 뺀 후 출력한다. 없다면 -1을 출력한다.
+명령 3) 입력 3 : 스택에 들어있는 정수의 개수를 출력한다.
+명령 4) 입력 4 : 스택이 비어있으면 1 ,아니면 0을 출력한다.
+명령 5) 입력 5 : 스택에 정수가 있으면 맨 위의 정수를 출력만 한다. 없다면 -1을 출력한다.
 
 ▶︎ 입력
-- N이 주어진다.[1, 2,100,000,000]
+- 첫번째 줄에 명령의 개수 N이 주어진다.[1, 1,000,000]
+- 둘째 줄 부터 각 줄에 명령이 하나씩 주어진다.
+  (정수 X는 1과 100,000 사이이며, 출력을 요구하는 명령은 최소 하나 주어진다.)
 
 ▶︎ 출력
-- 마지막에 열려 있는 창문의 개수를 출력한다.
+- 출력을 요구하는 명령이 주어질 때 마다 명령의 결과를 한 줄에 하나씩 출력한다.
 
 ▶︎ 아이디어
-- 모든 자연수는 두 수의 곱 axb를 약수로 가지기에 대부분의 수는 약수의 개수가 짝수
-- 약수를 홀수개로 가지는 경우는 a*a 형태를 가지는 제곱 수들 
-- 약수 개수가 짝수이면 창문은 닫혀있음 / 홀수 개면 열려 있음
 
 ============================================================================== */
 const fs = require('fs');
-const N = Number(fs.readFileSync(0, 'utf8').trim());
+const data = fs.readFileSync(0, 'utf8').trim().split(/\s+/).map(Number);
 
-let answer = 0;
+let N = data[0];
+const commands = data.slice(1);
 
-let i = 1;
-while(i*i <= N){
-  answer ++;
-  i++;
+const stack = [];
+const result = [];
+
+let i  = 0 ;
+while(i < N){
+  if(commands[i] === 1){
+    i++;
+    N++;
+    stack.push(commands[i]);
+  }else if(commands[i] === 2){
+    if(stack.length !== 0) result.push(stack.pop())
+    else result.push(-1);
+  }
+  else if(commands[i] === 3){
+    result.push(stack.length);
+  }
+  else if(commands[i] === 4){
+    if(stack.length === 0) result.push(1)
+    else result.push(0);
+  }
+  else{
+    if(stack.length !== 0) result.push(stack[stack.length - 1]);
+    else result.push(-1);
+  }
+  i++
 }
-console.log(answer);
+
+console.log(result.join('\n'));
+
