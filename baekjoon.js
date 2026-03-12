@@ -1,36 +1,48 @@
 /* ==============================================================================
-▶︎ 10773 - 제로
+▶︎ 9012 - 괄호
 
 ▶︎ 개요
-장부 기록을 위해 재현이가 계속 어떠한 수를 읽으면서 부르는데, 잘못 부른 수가 있으면 0을 외친다.
-0을 외치면 가장 최근에 장부에 기록된 수를 지운다.
-장부에 기록된 수들의 합을 출력하는 프로그램을 만들어보자.
+입력된 괄호 문자열이 올바른 괄호 문자열(VPS) 인지 아닌지를 판단하여 YES OR NO로 출력하자.
 
 ▶︎ 입력
-- 첫 번째 줄에 정수의 개수 K가 주어진다[1, 100,000]
-- 두 번째 줄부터 K개의 줄에 정수가 1개씩 주어진다.
-  (정수는 0~1,000,000 사이의 값이며, 정수가 0 이면 가장 최근에 쓴 수를 지운다.)
-  (또한 0은 장부에 지울 숫자가 있는 경우에만 주어진다)
+- 첫 번째 줄에 테스트 케이스의 개수 T가 주어진다.
+- 두 번째 줄부터 T개의 괄호 문자열이 각 줄에 주어진다.(문자열의 길이는 2 이상 50 이하)
 
 ▶︎ 출력
-- 장부에 적힌 수들의 합을 출력한다.
+- 각 문자열이 VPS이면 YES, 아니면 NO를 출력한다.
 
 ▶︎ 아이디어
+1) (를 만나면 스택에 넣는다.
+2) )를 만나면 
+    - 스택이 비어 있으면 No 입력 후 다음 케이스 진행
+    - 스택이 비어있지 않으면 pop 후 다음 문자 테스트
+3) 각 케이스에 대해서
 ============================================================================== */
 
 const fs = require('fs');
-const input = fs.readFileSync(0, 'utf8').trim().split(/\s+/).map(Number);
+const inputs = fs.readFileSync(0, 'utf8').trim().split('\n');
 
-const k = input[0];
+const k = Number(inputs[0]);
 
-const ledger = [];
 
-for(let i = 1; i <= k ; i++){
-  if(input[i] !== 0) ledger.push(input[i]);
-  else ledger.pop();
+const answer = [];
+
+for(var i = 1; i <= k ; i++){
+  const stack = [];
+  const ps = inputs[i];
+
+  let notVPS = false;
+  for(const ch of ps){
+    if(ch === '('){
+      stack.push(ch);
+    }else if(ch === ')'){
+      if(stack.length === 0) {
+        notVPS = true;
+        break;
+      }
+      stack.pop()
+    }
+  }
+  answer.push((stack.length === 0 && !notVPS) ? 'YES' : 'NO');
 }
-
-let sum = 0;
-for(const v of ledger) sum += v;
-
-console.log(sum);
+console.log(answer.join('\n'))
