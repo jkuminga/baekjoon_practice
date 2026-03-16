@@ -32,50 +32,35 @@ https://www.acmicpc.net/problem/12789
    A) 서브 대기열에 없다면  1)과 동일하게 진행
    B) 서브 대기열(스택)에 있다면 pop 한 값이 n+1과 다르면 Sad
 3) 모두 진행 시 stack이 비어있다면 Nice
+
+▶︎ 리펙토링 요소
+- 탐색(includes)는 스택에서 쓰면 안됨
+- 어차피 볼수 있는 것은 각각의 대기열의 가장 앞
+  -> 현재 번호를 각 대기열과 비교하고, 둘 다 아니면 본 줄 맨앞을 임시 스택으로 이동
+  -> 더 이상 할 수 있는 게 없으면 Sad
 ============================================================================== */
 const fs = require('fs');
 const input = fs.readFileSync(0, 'utf8').trim().split(/\s+/).map(Number);
 
 const N = input[0];
 const line = input.slice(1).reverse();
-console.log(line);
-
 const stack = [];
-let answer = 'Nice';
 
-for(let i = 1; i <= N; i++){
-  console.log(`=== 현재 번호 : ${i}번! ===`)
-  // 본 대기열에 i번 사람이 있다면, 
-  if(!stack.includes(i)){
-    console.log(`=== ${i}번은 메인 대기열에 있습니다. ===`)
-    for(let j = line.length - 1; j >= 0 ; j--){
-      if(line[j] === i) {
-        console.log(`   ${i} 번을 메인 대기열에서 찾았습니다!`)
-        line.pop();
-        console.log(`   현재 메인 대기열(역순) : ${line} / 서브 대기열 : ${stack}`);
-        break;
-      }else{
-        stack.push(line.pop());
-        console.log(`   ${i}번을 찾기 위해 ${line[j]} 를 임시 대기열로 보냅니다.`)
-        console.log(`   현재 메인 대기열(역순) : ${line} / 서브 대기열 : ${stack}`);
-      }
-    }
+let target = 1;
+
+while(target <= 1){
+  if(line.length && line[line.length - 1] === target){
+    line.pop();
+    target++;
   }
-  // 임시 대기열에 있다면
-  else{
-    console.log(`=== ${i}번은 서브 대기열에 있습니다. ===`)
-    if(stack[stack.length - 1] !== i){
-      console.log(`   ${i} 번은 임시 대기열에서 나올수 없습니다..`)
-      console.log(`   간식 받기에 실패했습니다...`);
-      answer = 'Sad';
-      break;
-    }else{
-      console.log(`   임시 대기열에서 ${i}번이 간식을 받습니다!`)
-      stack.pop();
-      console.log(`   현재 메인 대기열(역순) : ${line} / 서브 대기열 : ${stack}`);
-    }
+  else if(stack.length && stack[stack.length - 1] === target){
+    stack.pop();
+    target++;
+  }else if(line.length){
+    stack.push(line.pop());
+  }else{
+    break;
   }
 }
 
-console.log('간식 받기에 성공했습니다!!');
-console.log(answer);
+console.log(target > N ? 'Nice' : 'Sad');
