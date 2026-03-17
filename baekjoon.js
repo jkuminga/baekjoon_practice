@@ -18,39 +18,17 @@ https://www.acmicpc.net/problem/2164
 const fs = require('fs');
 const N = Number(fs.readFileSync(0, 'utf8').trim());
 
-let answer;
+const queue = [];
+let rear = 0
+let front = 0;
 
-
-if(N === 1){
-  answer = 1;
-}else if(N === 2 || N === 3){
-  answer = 2;
-}else{
-  const queue = [];
-  let front = 0;
-  let rear = 0;
-  
-  for(let i = 1; i <= Math.floor(N / 2); i++){
-    queue.push(2*i);
-    rear++;
-  }
-  
-  if(N % 2 !== 0) {
-    queue[rear] = queue[front]
-    rear++; front++;
-  }
-
-  while(true){
-    front++;
-    if(rear - front === 1) break;
-
-    queue[rear] = queue[front]
-    rear++; front++;
-    // console.log(`queue : ${queue} front / rear :  ${front}/ ${rear}`);
-  }
-
-  answer = queue[rear-1]
+for(let i = 1 ; i <= N; i++){
+  queue[rear++] = i;
 }
 
-console.log(answer);
+while(rear - front > 1){
+  front ++;  // 맨 앞 카드 버리기
+  queue[rear++] = queue[front++]; // 맨 앞 카드를 맨 뒤로 넣기
+}
 
+console.log(queue[front]);
