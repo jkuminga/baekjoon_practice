@@ -1,40 +1,69 @@
 /* ==============================================================================
-▶︎ 11866 - 요세푸스 문제 0
-https://www.acmicpc.net/problem/11866
+▶︎ 28279 - 덱2
+https://www.acmicpc.net/problem/28279
 
 ▶︎ 개요
-1번부터 N번까지 N명의 사람이 원을 이루어 앉아 있고, 양의 정수 K(<=N)이 주어질 때,
-순서대로 K번째 사람을 제거한다. 한 사람이 제거되면 남은 사람들로 이루어진 원을 따라 과정을 계속해 나간다.
-사람들이 제거되는 순서를 (n,k) 요세푸스 순열이라고 한다.
-ex) (7,3) = <3, 6, 2, 7, 5, 1, 4>
+- 덱을 구현한 뒤, 입력으로 주어지는 명령들을 처리하는 프로그램을 작성하라.
+
+명령
+1) 1 X: 정수 X를 덱의 앞에 넣는다. (1 ≤ X ≤ 100,000)
+2) 2 X: 정수 X를 덱의 뒤에 넣는다. (1 ≤ X ≤ 100,000)
+3) 3: 덱에 정수가 있다면 맨 앞의 정수를 빼고 출력한다. 없다면 -1을 대신 출력한다.
+4) 4: 덱에 정수가 있다면 맨 뒤의 정수를 빼고 출력한다. 없다면 -1을 대신 출력한다.
+5) 5: 덱에 들어있는 정수의 개수를 출력한다.
+6) 6: 덱이 비어있으면 1, 아니면 0을 출력한다.
+7) 7: 덱에 정수가 있다면 맨 앞의 정수를 출력한다. 없다면 -1을 대신 출력한다.
+8) 8: 덱에 정수가 있다면 맨 뒤의 정수를 출력한다. 없다면 -1을 대신 출력한다.
 
 ▶︎ 입력
-첫 째 줄에 N,K가 순서대로 주어진다. ( <= 1,000 )
+첫째 줄에 명령의 수 N이 주어진다.[1, 1,000,000]
+둘째 줄부터 N개의 줄에 명령이 하나씩 주어진다.
 
 ▶︎ 출력
-요세푸스 순열을 출력한다
+출력을 요구하는 명령이 주어질 때 마다 명령의 결과를 한줄에 하나씩 출력한다.
 
 ▶︎ 아이디어
-- 현재 front에서 k 떨어진 곳 전까지의 모든 요소들을 현재 큐의 뒤에 push
 ============================================================================== */
 const fs = require('fs');
-const [N, K] =fs.readFileSync(0, 'utf8').trim().split(/\s+/).map(Number);
+const inputs = fs.readFileSync(0, 'utf8').trim().split('\n');
 
+const N = Number(inputs[0]);
 
-const queue = [];
-let front = 0; 
-let rear = 0;
-
-for(let i = 1; i <= N; i++) queue[rear++] = i;
+const deque = new Array(20000);
+let front = 10000;
+let rear = 10000;
 
 const answer = [];
 
-while(rear - front >= 1){
-  for(var j = 0; j < K - 1; j++){
-    queue[rear++] = queue[front++];
+for(var i = 1; i <= N; i++){
+  const [command, value] = inputs[i].split(' ').map(Number);
+
+  if(command === 1){
+    // front는 현재 아이템이 들어있는 곳을 가리키고 있음
+    // rear는 현재 아이템이 들어있는 곳의 하나 앞쪽을 가리키고 있음
+    front--;
+    deque[front] = value;
+  }else if(command === 2){
+    deque[rear] = value;
+    rear++;
+  }else if(command === 3){
+    if(front === rear) answer.push(-1);
+    else answer.push(deque[front++]);
+  }else if(command === 4){
+    if(front === rear) answer.push(-1);
+    else{
+      rear--;
+      answer.push(deque[rear]);
+    }
+  }else if(command === 5){
+    answer.push(rear - front);
+  }else if(command === 6){
+    answer.push((rear === front) ? 1 : 0);
+  }else if(command === 7){
+    answer.push((rear === front) ? -1 : deque[front]);
+  }else if(command === 8){
+    answer.push((rear === front) ? -1 : deque[rear - 1]);
   }
-  answer.push(queue[front++])
 }
 
-console.log(`<${answer.join(', ')}>`)
-
+console.log(answer.join('\n'));
