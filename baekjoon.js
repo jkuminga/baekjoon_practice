@@ -1,69 +1,65 @@
 /* ==============================================================================
-▶︎ 28279 - 덱2
-https://www.acmicpc.net/problem/28279
+▶︎ 24511 - queuestack
+https://www.acmicpc.net/problem/24511
 
 ▶︎ 개요
-- 덱을 구현한 뒤, 입력으로 주어지는 명령들을 처리하는 프로그램을 작성하라.
+새로운 자료구조인 queuestack의 구조는 다음과 같다. 1,2,... N번의 자료구조가 나열되어 있다.
+각각의 자료구조에는 스택이나 큐 둘중 하나가 들어있으며, 각 자료구조에는 원소가 하나만 들어 있다.
 
-명령
-1) 1 X: 정수 X를 덱의 앞에 넣는다. (1 ≤ X ≤ 100,000)
-2) 2 X: 정수 X를 덱의 뒤에 넣는다. (1 ≤ X ≤ 100,000)
-3) 3: 덱에 정수가 있다면 맨 앞의 정수를 빼고 출력한다. 없다면 -1을 대신 출력한다.
-4) 4: 덱에 정수가 있다면 맨 뒤의 정수를 빼고 출력한다. 없다면 -1을 대신 출력한다.
-5) 5: 덱에 들어있는 정수의 개수를 출력한다.
-6) 6: 덱이 비어있으면 1, 아니면 0을 출력한다.
-7) 7: 덱에 정수가 있다면 맨 앞의 정수를 출력한다. 없다면 -1을 대신 출력한다.
-8) 8: 덱에 정수가 있다면 맨 뒤의 정수를 출력한다. 없다면 -1을 대신 출력한다.
+queuestack의 동작방식은 다음과 같다.
+  - x0을 입력받아 1번 자료구조에 push한 뒤, 1번 자료구조에서 pop한다. 이때의 원소를 x1이라 한다.
+  - x1을 2번 자료구조에 push한 뒤, 2번 자료구조에서 pop 한다. 이때의 원소를 x2라고 한다.
+    ...
+  - xn-1을 N번 자료구조에 push한 뒤, N번 자료구조에서 pop한다. 이때의 원소를 xn이라고 한다.
+  - xn을 리턴한다.
+
+queuestack에 길이 M의 수열 C의 원소들을 순서대로 넣는다. 이 때 각 회차의 진행상태는 유지된다.
+(이전 회차에 삽입된 원소가 각 자료구조에 남아있음)
 
 ▶︎ 입력
-첫째 줄에 명령의 수 N이 주어진다.[1, 1,000,000]
-둘째 줄부터 N개의 줄에 명령이 하나씩 주어진다.
+- 첫째 줄에 queuestack을 구성하는 자료구조의 개수 N이 주어진다(1 ~ 100,000)
+- 둘째 줄에 queuestack의 자료구조가 순서대로 주어진다. 0이면 큐, 1이면 스택
+- 셋째 줄에 queuestack의 각 자료구조가 가지고 있는 원소가 1개씩 주어진다.(1 ~ 1,000,000,000)
+- 넷째 줄에 삽입할 수열의 길이 M이 주어진다.(1 ~ 100,000)
+- 다섯째 줄에 삽입할 수열의 원소들이 주어진다. 각 원소는 1보다 크거나 같고 1,000,000,000보다 작거나 같다.
+- 입력으로 주어지는 모든 수는 정수이다.
 
 ▶︎ 출력
-출력을 요구하는 명령이 주어질 때 마다 명령의 결과를 한줄에 하나씩 출력한다.
+- 첫번째 줄에 수열의 각 원소를 입력했을 때의 리턴값을 공백으로 구분하여 출력한다.
 
 ▶︎ 아이디어
+- 스택의 경우 입력한 값이 그대로 출력되기에 고려하지 않아도 됨
+- 큐가 여러개 선형으로 연결된 구조 = 큐 1개
 ============================================================================== */
 const fs = require('fs');
 const inputs = fs.readFileSync(0, 'utf8').trim().split('\n');
 
-const N = Number(inputs[0]);
-
-const deque = new Array(20000);
-let front = 10000;
-let rear = 10000;
+const N = Number(inputs[0]); // 4
+const structures = inputs[1].trim().split(/\s+/).map(Number); // [0, 1, 1, 0]
+const existingElements = inputs[2].trim().split(/\s+/).map(Number); // [1, 2, 3, 4]
+const M = Number(inputs[3]); // 3
+const C = inputs[4].trim().split(/\s+/).map(Number); // [2, 4, 7]
 
 const answer = [];
 
-for(var i = 1; i <= N; i++){
-  const [command, value] = inputs[i].split(' ').map(Number);
+const queue = [];
+let front = 0;
+let rear = 0
 
-  if(command === 1){
-    // front는 현재 아이템이 들어있는 곳을 가리키고 있음
-    // rear는 현재 아이템이 들어있는 곳의 하나 앞쪽을 가리키고 있음
-    front--;
-    deque[front] = value;
-  }else if(command === 2){
-    deque[rear] = value;
-    rear++;
-  }else if(command === 3){
-    if(front === rear) answer.push(-1);
-    else answer.push(deque[front++]);
-  }else if(command === 4){
-    if(front === rear) answer.push(-1);
-    else{
-      rear--;
-      answer.push(deque[rear]);
+for(let i = 0 ; i < N; i++){
+    if(structures[i] === 0) {
+        queue[rear] = existingElements[i];
+        rear++;
     }
-  }else if(command === 5){
-    answer.push(rear - front);
-  }else if(command === 6){
-    answer.push((rear === front) ? 1 : 0);
-  }else if(command === 7){
-    answer.push((rear === front) ? -1 : deque[front]);
-  }else if(command === 8){
-    answer.push((rear === front) ? -1 : deque[rear - 1]);
-  }
 }
 
-console.log(answer.join('\n'));
+queue.reverse();
+for(let i = 0; i < M; i++){
+    // 0번 pop하고
+    // 뒤에 push
+    queue[rear] = C[i];
+    answer.push(queue[front++]);
+    rear++
+}
+
+console.log(answer.join(' '));
