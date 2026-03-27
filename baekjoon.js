@@ -1,28 +1,41 @@
 /* ==============================================================================
-▶︎ 1037 - 약수
-https://www.acmicpc.net/problem/1037
+▶︎ 25192 - 인사성 밝은 곰곰이
+https://www.acmicpc.net/problem/25192
 
 ▶︎ 개요
-양수 A가 N의 진짜 약수가 되려면, N이 A의 배수이고, A가 1과 N이 아니어야 한다. 어떤 수 N의 진짜 약수가
-모두 주어질 때, N을 구하는 프로그램을 작성하시오.
+오픈 채팅방에는 새로운 사람이 들어온 이후 처음 채팅을 입력하는 사람은 반드시 곰곰티콘으로 인사를 한다.
+그 외의 기록은 평범한 채팅이다.
+
+채팅 기록 중 곰곰티콘이 사용된 횟수를 구하자.
 
 ▶︎ 입력
-- 첫째 줄에 N의 진짜 약수 개수가 주어진다. (50보다 작거나 같은 자연수)
-- 둘째 줄에는 N의 진짜 약수들이 주어진다. (1,000,000 보다 작거나 같고, 2보다 크거나 같은 자연수)
+- 첫째 줄에는 채팅방의 기록 수를 나타내는 정수 N이 주어진다(1 ~ 100,000)
+- 둘째 줄부터 N개의 줄에 걸쳐 새로운 사람의 입장을 나타내는 ENTER, 
+  혹은 채팅을 입력한 유저의 닉네임이 문자열로 주어진다.
+  (첫번째로 주어지는 문자열은 반드시 ENTER)
 
 ▶︎ 출력
-첫째 줄에 N을 출력한다.
+곰곰티콘이 사용된 횟수를 출력하시오
 
 ▶︎ 아이디어
-- 모든 진짜 약수들의 최솟값 * 최댓값 = N
 ============================================================================== */
 const fs = require('fs');
-const inputs = fs.readFileSync(0, 'utf8').trim().split(/\s+/).map(Number);
+const inputs = fs.readFileSync(0, 'utf8').trim().split('\n');
 
-const N = inputs[0];
-const elements = inputs.slice(1);
+const N = Number(inputs[0]);
+const messages = inputs.slice(1);
 
-const minE = Math.min(...elements);
-const maxE = Math.max(...elements);
+const logs = new Set();
+let count = 0;
 
-console.log(minE * maxE);
+for(let m of messages){
+  if(m == 'ENTER') logs.clear();
+  else{
+    if(!logs.has(m)) {
+      logs.add(m);
+      count++;
+    }
+  }
+}
+
+console.log(count);
