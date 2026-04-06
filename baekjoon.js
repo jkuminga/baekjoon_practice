@@ -1,45 +1,74 @@
 /* ==============================================================================
-▶︎ 26069 - 붙임성 좋은 총총이
-https://www.acmicpc.net/problem/26069
+▶︎ 2108 - 통계학
+https://www.acmicpc.net/problem/2108
 
 ▶︎ 개요
-무지개 댄스를 추고 있지 않던 사람이 무지개 댄스를 추는 사람을 만나면, 만난 시점 이후로 무지개 댄스를 추게된다.
-최초에는 ChongChong만 무지개 댄스를 추고 있다.
-사람들의 대면 기록을 보고, 마지막 기록 이후 무지개 댄스를 추는 사람의 수를 출력하라.
+통계학에서 N개의 수를 대표하는 방법은 다음과 같다.
+1. 산술평균 : N개의 수들의 합을 N으로 나눈 값
+2. 중앙값 : N개의 수들을 증가하는 순서로 나열했을 경우 그 중앙에 위치하는 값
+3. 최빈값 : N개의 수들 중 가장 많이 나타나는 값
+4. 범위 : N개의 수들 중 최댓값과 최솟값의 차이
+
+N개의 수가 주어졌을 때, 4가지 기본 통계값을 구하는 프로그램을 작성하자.
 
 ▶︎ 입력
-- 첫째줄 에는 사람들이 만난 기록의 수 N(1 ~ 1,000)이 주어진다.
-- 두번쨰 줄부터 N개의 줄에 걸쳐 만난 사람 Ai와 Bi의 기록이 주어진다. 
-  Ai와 Bi는 숫자와 영문 대소문자로 이루어진 최대 길이 20의 문자열이다.
-- 총총이의 이름은 ChongChong으로 주어지며, 기록에서 1회 이상 주어진다.
-- 사람 이름의 대소문자를 구분한다.
+- 첫째 줄에 수의 개수 N(~500,000)이 주어진다. 단 N은 홀수이다.
+- 둘째 줄부터 N개의 정수가 주어진다. 각 정수의 절댓값은 4,000 을 넘지 않는다.
   
 ▶︎ 출력
-무지개 댄스를 추는 사람의 수를 출력하라.
+- 첫째 줄에는 산술평균을 출력(소수점 이하 첫째 자리에서 반올림)
+- 둘째 줄에는 중앙값 출력
+- 셋째 줄에는 최빈값 출력(여러 개 있을 때는 최빈값 중 두번 째로 작은 값을 출력)
+- 넷째 줄에는 범위를 출력
 
 ▶︎ 아이디어
 ============================================================================== */
 const fs = require('fs');
-const inputs = fs.readFileSync(0, 'utf8').trim().split('\n');
+const inputs = fs.readFileSync(0, 'utf8').trim().split('\n').map(Number);
 
-const N = Number(inputs[0]);
-const history = inputs.slice(1);
+const N = inputs[0];
+const numbers = inputs.slice(1).sort((a,b) => a - b);
 
-const dancing = new Set();
+function getAMean(n, numbers){
+  let sum = 0;
+  for(const num of numbers) sum += num;
+  const aMean = Math.round(sum / n);
 
-// 리펙토링 요소 : ChongChong을 dancing 안에 넣고 시작하기
-dancing.add('ChongChong');
-
-for(const h of history){
-  const [a,b] = h.split(' ');
-
-  // ChongChong이 dancing 안에 있기 때문에 조건문은 하나로 충분하다.
-
-  if(dancing.has(a) || dancing.has(b)){
-    // set은 알아서 중복을 제거하기 때문에 둘다 넣어도 상관없음
-    dancing.add(a);
-    dancing.add(b);
-  }
+  return aMean === -0 ? 0 : aMean;
 }
 
-console.log(dancing.size);
+function getMedian(n, numbers){
+  const idx = Math.floor(n / 2);
+  return numbers[idx];
+}
+
+function getMostFrequentValue(numbers){
+  const counts = new Map();
+
+  for(const num of numbers){
+    if(!counts.has(num)) counts.set(num, 1) ;
+    else counts.set(num, counts.get(num) + 1)
+  }
+  const max = Math.max(...counts.values())
+
+  let candidates = [];
+  let keys = counts.keys();
+
+  for(const k of keys){
+    if(counts.get(k) === max) candidates.push(k);
+  }
+
+  return candidates.length === 1 ?  candidates[0] : candidates[1] 
+}
+
+function getRange(numbers){
+  const max = Math.max(...numbers);
+  const min = Math.min(...numbers);
+
+  return max - min;
+}
+
+console.log(getAMean(N, numbers));
+console.log(getMedian(N, numbers));
+console.log(getMostFrequentValue(numbers));
+console.log(getRange(numbers));
