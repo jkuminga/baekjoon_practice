@@ -1,21 +1,21 @@
 /* ==============================================================================
-▶︎ 25192 - 인사성 밝은 곰곰이
-https://www.acmicpc.net/problem/25192
+▶︎ 26069 - 붙임성 좋은 총총이
+https://www.acmicpc.net/problem/26069
 
 ▶︎ 개요
-오픈 채팅방에는 새로운 사람이 들어온 이후 처음 채팅을 입력하는 사람은 반드시 곰곰티콘으로 인사를 한다.
-그 외의 기록은 평범한 채팅이다.
-
-채팅 기록 중 곰곰티콘이 사용된 횟수를 구하자.
+무지개 댄스를 추고 있지 않던 사람이 무지개 댄스를 추는 사람을 만나면, 만난 시점 이후로 무지개 댄스를 추게된다.
+최초에는 ChongChong만 무지개 댄스를 추고 있다.
+사람들의 대면 기록을 보고, 마지막 기록 이후 무지개 댄스를 추는 사람의 수를 출력하라.
 
 ▶︎ 입력
-- 첫째 줄에는 채팅방의 기록 수를 나타내는 정수 N이 주어진다(1 ~ 100,000)
-- 둘째 줄부터 N개의 줄에 걸쳐 새로운 사람의 입장을 나타내는 ENTER, 
-  혹은 채팅을 입력한 유저의 닉네임이 문자열로 주어진다.
-  (첫번째로 주어지는 문자열은 반드시 ENTER)
-
+- 첫째줄 에는 사람들이 만난 기록의 수 N(1 ~ 1,000)이 주어진다.
+- 두번쨰 줄부터 N개의 줄에 걸쳐 만난 사람 Ai와 Bi의 기록이 주어진다. 
+  Ai와 Bi는 숫자와 영문 대소문자로 이루어진 최대 길이 20의 문자열이다.
+- 총총이의 이름은 ChongChong으로 주어지며, 기록에서 1회 이상 주어진다.
+- 사람 이름의 대소문자를 구분한다.
+  
 ▶︎ 출력
-곰곰티콘이 사용된 횟수를 출력하시오
+무지개 댄스를 추는 사람의 수를 출력하라.
 
 ▶︎ 아이디어
 ============================================================================== */
@@ -23,19 +23,20 @@ const fs = require('fs');
 const inputs = fs.readFileSync(0, 'utf8').trim().split('\n');
 
 const N = Number(inputs[0]);
-const messages = inputs.slice(1);
+const history = inputs.slice(1);
 
-const logs = new Set();
-let count = 0;
+const dancing = new Set();
 
-for(let m of messages){
-  if(m == 'ENTER') logs.clear();
-  else{
-    if(!logs.has(m)) {
-      logs.add(m);
-      count++;
-    }
+for(const h of history){
+  const [a,b] = h.split(' ');
+
+  if(a === 'ChongChong' || b === 'ChongChong'){
+    dancing.add((a === 'ChongChong') ? b : a);
+  }
+
+  if(dancing.has(a) || dancing.has(b)){
+    dancing.add((dancing.has(a) ? b : a));
   }
 }
 
-console.log(count);
+console.log(dancing.size);
