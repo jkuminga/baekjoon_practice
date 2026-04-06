@@ -27,15 +27,18 @@ const history = inputs.slice(1);
 
 const dancing = new Set();
 
+// 리펙토링 요소 : ChongChong을 dancing 안에 넣고 시작하기
+dancing.add('ChongChong');
+
 for(const h of history){
   const [a,b] = h.split(' ');
 
-  if(a === 'ChongChong' || b === 'ChongChong'){
-    dancing.add((a === 'ChongChong') ? b : a);
-  }
+  // ChongChong이 dancing 안에 있기 때문에 조건문은 하나로 충분하다.
 
   if(dancing.has(a) || dancing.has(b)){
-    dancing.add((dancing.has(a) ? b : a));
+    // set은 알아서 중복을 제거하기 때문에 둘다 넣어도 상관없음
+    dancing.add(a);
+    dancing.add(b);
   }
 }
 
