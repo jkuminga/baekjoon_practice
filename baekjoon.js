@@ -1,74 +1,68 @@
 /* ==============================================================================
-▶︎ 2108 - 통계학
-https://www.acmicpc.net/problem/2108
+▶︎ 20920 - 영단어 암기는 괴로워
+https://www.acmicpc.net/problem/20920
 
 ▶︎ 개요
-통계학에서 N개의 수를 대표하는 방법은 다음과 같다.
-1. 산술평균 : N개의 수들의 합을 N으로 나눈 값
-2. 중앙값 : N개의 수들을 증가하는 순서로 나열했을 경우 그 중앙에 위치하는 값
-3. 최빈값 : N개의 수들 중 가장 많이 나타나는 값
-4. 범위 : N개의 수들 중 최댓값과 최솟값의 차이
+영단어를 효율적으로 외우기 위해서, 아래와 같은 우선순위를 가진 단어장을 만들고자 한다.
 
-N개의 수가 주어졌을 때, 4가지 기본 통계값을 구하는 프로그램을 작성하자.
+1. 자주 나오는 단어일수록 앞에 배치
+2. 해당 단어의 길이가 길수록 앞에 배치
+3. 알파벳 사전 순으로 앞에 있는 단어일수록 앞에 배치
+
+단, 길이가 M 이상인 단어들만 외운다.
 
 ▶︎ 입력
-- 첫째 줄에 수의 개수 N(~500,000)이 주어진다. 단 N은 홀수이다.
-- 둘째 줄부터 N개의 정수가 주어진다. 각 정수의 절댓값은 4,000 을 넘지 않는다.
+- 첫째 줄에는 영어 지문에 나오는 단어의 개수 N과 외울 단어의 길이 기준인 M 이 주어진다.
+  (1 <= N <= 100,000  /  1 <= M <= 10)
+- 둘째 줄부터 N + 1 번째 줄까지 외울 단어를 입력받는다.(모두 소문자이며 길이는 10 이하)
   
 ▶︎ 출력
-- 첫째 줄에는 산술평균을 출력(소수점 이하 첫째 자리에서 반올림)
-- 둘째 줄에는 중앙값 출력
-- 셋째 줄에는 최빈값 출력(여러 개 있을 때는 최빈값 중 두번 째로 작은 값을 출력)
-- 넷째 줄에는 범위를 출력
+- 외워야 할 단어들을 순서에 맞게 하나씩 출력한다.
+
 
 ▶︎ 아이디어
 ============================================================================== */
 const fs = require('fs');
-const inputs = fs.readFileSync(0, 'utf8').trim().split('\n').map(Number);
+const inputs = fs.readFileSync(0, 'utf8').trim().split('\n');
 
-const N = inputs[0];
-const numbers = inputs.slice(1).sort((a,b) => a - b);
+const [N, M] = inputs[0].split(' ').map(Number);
+const words = [];
 
-function getAMean(n, numbers){
-  let sum = 0;
-  for(const num of numbers) sum += num;
-  const aMean = Math.round(sum / n);
+const countMap = new Map();
 
-  return aMean === -0 ? 0 : aMean;
-}
-
-function getMedian(n, numbers){
-  const idx = Math.floor(n / 2);
-  return numbers[idx];
-}
-
-function getMostFrequentValue(numbers){
-  const counts = new Map();
-
-  for(const num of numbers){
-    if(!counts.has(num)) counts.set(num, 1) ;
-    else counts.set(num, counts.get(num) + 1)
+// M 이상 단어 추출 + 나온 횟수 측정
+for(let i = 1; i <= N; i++){
+  if(inputs[i].length >= M){
+    if(countMap.has(inputs[i])){
+      countMap.set(inputs[i], countMap.get(inputs[i]) + 1);
+    }else{
+      countMap.set(inputs[i], 1);
+    }
   }
-  const max = Math.max(...counts.values())
+}
 
-  let candidates = [];
-  let keys = counts.keys();
+let wordList = Array.from(countMap);
 
-  for(const k of keys){
-    if(counts.get(k) === max) candidates.push(k);
+wordList = wordList.sort((a, b)=>{
+  if(a[1] < b[1]){
+    return 1;
   }
 
-  return candidates.length === 1 ?  candidates[0] : candidates[1] 
-}
+  if(a[1] === b[1]){
+    if(a[0].length < b[0].length){
+      return 1
+    }else if(a[0].length === b[0].length){
+      if(a[0] > b[0]) return 1
+      else return -1
+    }else return -1
+  }
+  
+  if(a[1] > b[1]) return -1
+})
 
-function getRange(numbers){
-  const max = Math.max(...numbers);
-  const min = Math.min(...numbers);
+const answers = [];
 
-  return max - min;
-}
+for(const w of wordList) answers.push(w[0])
 
-console.log(getAMean(N, numbers));
-console.log(getMedian(N, numbers));
-console.log(getMostFrequentValue(numbers));
-console.log(getRange(numbers));
+console.log(answers.join('\n'))
+
