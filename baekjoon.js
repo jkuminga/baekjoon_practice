@@ -1,43 +1,84 @@
 /* ==============================================================================
-▶︎ 25501 - 재귀의 귀재
-https://www.acmicpc.net/problem/25501
+▶︎ 24060 - 알고리즘 수업 - 병합 정렬 1
+https://www.acmicpc.net/problem/24060
 
 ▶︎ 개요
-팰린드롬 : 앞에서 읽었을 때와 뒤에서 읽었을 때가 같은 문자열
-팰린드롬을 판별하는 재귀 함수를 이용하여 어떤 문자열이 팰린드롬인지의 여부와 재귀 함수 호출 횟수를 출력하자.
+병합 정렬로 배열을 오름차순으로 정렬하는 경우 배열 A에 K 번째 저장되는 수를 구하자.
+
+▶︎ 예시
+4 5 1 3 2 -> 4 5 1 3 2 -> 4 5 1 3 2 -> 1 5 1 3 2 -> 1 4 1 3 2 -> 1 4 5 3 2 
+-> 1 4 5 2 2 -> 1 4 5 2 3 -> 1 4 5 2 3 -> 1 2 5 2 3 -> 1 2 3 2 3 -> 1 2 3 4 3 
+-> 1 2 3 4 5. 총 12회 저장이 발생하고 일곱 번째 저장되는 수는 3이다.
 
 ▶︎ 입력
-- 첫째 줄에 테스트케이스의 개수 T가 주어진다.(1 ~ 1,000)
-- 둘째 줄부터 T개의 줄에 알파벳 대문자로 구성된 문자열 S가 주어진다.(1 ~ 1 000)
+- 첫번 째 줄에 배열 A의 크기 N(5 ~ 500 000), 저장 횟수 K(1 ~ 10^8)이 주어진다.
+- 다음 줄에 서로 다른 배열 A의 원소 An이 주어진다.(1 <= An <= 10^9)
 
 ▶︎ 출력
-- 각 테스트케이스 마다 함수의 반환값과 recursion 함수의 호출 횟수를 각 줄에 출력
+배열 A에 K 번째 저장되는 수를 출력한다. 저장 횟수가 K보다 작으면 -1을 출력한다.
 
-▶︎ 리팩토링 요소
-counter를 전역 변수로 사용하는 것이 부적절해 보임
--> recursion의 파라미터로 제공하는 방식으로 변경
 ============================================================================== */
 const fs = require('fs');
-const inputs = fs.readFileSync(0, 'utf8').trim().split('\n');
+const inputs = fs.readFileSync(0, 'utf8').trim().split(/\s+/).map(Number);
 
-const T = Number(inputs[0]);
-const answers = [];
+const N = inputs[0];
+const K = inputs[1];
+const list = inputs.slice(2);
 
-// 변경사항 : count를 매개변수로 받음
-function recursion(char, l, r, count){
-  if(l >= r) return [1, count];
-  if(char[l] != char[r]) return [0, count];
-  
-  // recursion 재귀 시 마다 count 를 ++
-  return recursion(char, l+1, r-1, count + 1);
+const logs = [];
+
+function mergeSort(A, p, r) {
+    // p가 r보다 작을 때만 실행 (배열의 크기가 1보다 클 때)
+    if (p < r) {
+        const q = Math.floor((p + r) / 2); // 중간 지점 계산
+        mergeSort(A, p, q);                // 전반부 정렬
+        mergeSort(A, q + 1, r);            // 후반부 정렬
+        merge(A, p, q, r);                 // 병합
+    }
 }
 
-function isPalindrome(char){
-  return recursion(char, 0, char.length - 1, 1);
+function merge(A, p, q, r) {
+    let i = p;
+    let j = q + 1;
+    let t = 0; // JS 배열은 0부터 시작하니까 t는 0으로 초기화
+    const tmp = []; // 임시 배열
+
+    // 양쪽 배열을 비교하면서 작은 것부터 tmp에 채워 넣기
+    while (i <= q && j <= r) {
+        if (A[i] <= A[j]) {
+            tmp[t++] = A[i++];
+        } else {
+            tmp[t++] = A[j++];
+        }
+    }
+
+    // 왼쪽 배열 부분이 남은 경우 몽땅 tmp에 털어넣기
+    while (i <= q) {
+        tmp[t++] = A[i++];
+    }
+
+    // 오른쪽 배열 부분이 남은 경우 몽땅 tmp에 털어넣기
+    while (j <= r) {
+        tmp[t++] = A[j++];
+    }
+
+    // 정렬된 결과를 원래 배열 A의 [p..r] 구간에 덮어쓰기
+    i = p;
+    t = 0;
+    while (i <= r) {
+        // A[i++] = tmp[t++];
+        A[i] = tmp[t];
+        logs.push(tmp[t]);
+        i++; t++;
+    }
 }
 
-for(let i = 1; i <= T; i++ ){
-  const [result, count] = isPalindrome(inputs[i])
-  answers.push(`${result} ${count}`)
-}
-console.log(answers.join('\n'));
+
+
+
+mergeSort(list, 0, list.length - 1);
+
+
+(logs.length < K) ? console.log(-1) : console.log(logs[K - 1]);
+
+
