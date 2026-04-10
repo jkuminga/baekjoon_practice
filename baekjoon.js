@@ -1,84 +1,82 @@
 /* ==============================================================================
-▶︎ 24060 - 알고리즘 수업 - 병합 정렬 1
-https://www.acmicpc.net/problem/24060
+▶︎ 4779 - 칸토어 집합
+https://www.acmicpc.net/problem/4779
 
 ▶︎ 개요
-병합 정렬로 배열을 오름차순으로 정렬하는 경우 배열 A에 K 번째 저장되는 수를 구하자.
+칸토어 집합 : 0~1 사이 실수로 이루어진 집합으로, 구간 [0, 1]에서 시작해서 각 구간을 3등분하여 
+가운데 구간을 반복적으로 제외하는 방식으로 만들어짐
 
 ▶︎ 예시
-4 5 1 3 2 -> 4 5 1 3 2 -> 4 5 1 3 2 -> 1 5 1 3 2 -> 1 4 1 3 2 -> 1 4 5 3 2 
--> 1 4 5 2 2 -> 1 4 5 2 3 -> 1 4 5 2 3 -> 1 2 5 2 3 -> 1 2 3 2 3 -> 1 2 3 4 3 
--> 1 2 3 4 5. 총 12회 저장이 발생하고 일곱 번째 저장되는 수는 3이다.
+1. - 가 3^N 개 있는 문자열에서 시작
+2. 문자열을 3등분 한 뒤, 가운데 문자열을 공백으로 바꾼다. 이렇게 하면 선이 2개가 남는다.
+3. 각 선을 3등분하고, 가운데 문자열을 공백으로 바꾼다.
+4. 모든 선의 길이가 1이 될 때 까지 계속한다.
+
 
 ▶︎ 입력
-- 첫번 째 줄에 배열 A의 크기 N(5 ~ 500 000), 저장 횟수 K(1 ~ 10^8)이 주어진다.
-- 다음 줄에 서로 다른 배열 A의 원소 An이 주어진다.(1 <= An <= 10^9)
+- 각 줄에 N이 주어진다.(0 ~ 12)
 
 ▶︎ 출력
-배열 A에 K 번째 저장되는 수를 출력한다. 저장 횟수가 K보다 작으면 -1을 출력한다.
+- 입력으로 주어진 N에 대해서, 해당하는 칸토어 집합의 근사를 출력한다.
+
+▶︎ 아이디어
+// 27
+// recursion(char, 0, 26) (div = 9)
+//  ㄴ recursion(char, 0, 8) (div = 3)
+//      ㄴ recursion(char, 0, 2) (div = 1)
+//          ㄴ recursion(char, 0, 0) // no
+//          ㄴ recursion(char, 2, 2) // no
+//          ㄴ cantor(char, 1, 1) 
+//      ㄴ recursion(char, 6, 8) (div = 1)
+//          ㄴ recursion(char, 6, 6) // no
+//          ㄴ recursion(char, 8, 8) // no
+//          ㄴ cantor(char, 7, 7)   
+//      ㄴ cantor(char, 3, 5)          
+//  ㄴ recursion(char, 18, 26) (div = 3)
+//      ㄴ recursion(char, 18, 20) (div = 1)
+//          ㄴ recursion(char, 18, 18) // false
+//          ㄴ recursion(char, 20, 20) // false
+//          ㄴ cantor(char, 19, 19) 
+//      ㄴ recursion(char, 24, 26) (div = 1)
+//          ㄴ recursion(char, 24, 24)
+//          ㄴ recursion(char, 26, 26)
+//          ㄴ cantor(char, 25, 25)
+//      ㄴ cantor(char, 21, 23)
+//  ㄴ cantor(char, 9, 17)
 
 ============================================================================== */
 const fs = require('fs');
-const inputs = fs.readFileSync(0, 'utf8').trim().split(/\s+/).map(Number);
+const inputs = fs.readFileSync(0, 'utf8').trim().split('\n').map(Number);
 
-const N = inputs[0];
-const K = inputs[1];
-const list = inputs.slice(2);
 
-const logs = [];
-
-function mergeSort(A, p, r) {
-    // p가 r보다 작을 때만 실행 (배열의 크기가 1보다 클 때)
-    if (p < r) {
-        const q = Math.floor((p + r) / 2); // 중간 지점 계산
-        mergeSort(A, p, q);                // 전반부 정렬
-        mergeSort(A, q + 1, r);            // 후반부 정렬
-        merge(A, p, q, r);                 // 병합
+function recursion(char, start, end){
+    let div = (end - start + 1) / 3;
+    
+    if(1 <= div){
+        recursion(char, start, start + div - 1);
+        recursion(char, end - div + 1, end)
+        cantor(char, start + div, end - div);
     }
 }
 
-function merge(A, p, q, r) {
-    let i = p;
-    let j = q + 1;
-    let t = 0; // JS 배열은 0부터 시작하니까 t는 0으로 초기화
-    const tmp = []; // 임시 배열
+function cantor(char, left, right){
+    let i = left;
+    let j = right;
+    
 
-    // 양쪽 배열을 비교하면서 작은 것부터 tmp에 채워 넣기
-    while (i <= q && j <= r) {
-        if (A[i] <= A[j]) {
-            tmp[t++] = A[i++];
-        } else {
-            tmp[t++] = A[j++];
-        }
-    }
-
-    // 왼쪽 배열 부분이 남은 경우 몽땅 tmp에 털어넣기
-    while (i <= q) {
-        tmp[t++] = A[i++];
-    }
-
-    // 오른쪽 배열 부분이 남은 경우 몽땅 tmp에 털어넣기
-    while (j <= r) {
-        tmp[t++] = A[j++];
-    }
-
-    // 정렬된 결과를 원래 배열 A의 [p..r] 구간에 덮어쓰기
-    i = p;
-    t = 0;
-    while (i <= r) {
-        // A[i++] = tmp[t++];
-        A[i] = tmp[t];
-        logs.push(tmp[t]);
-        i++; t++;
+    while(i <= j){
+        char[i] = " "
+        i++
     }
 }
 
 
+const answers = [];
 
+for(const n of inputs){
+    let char = Array(3**n).fill('-')
+    recursion(char, 0, char.length - 1)
+    answers.push(char.join(''));
+}
 
-mergeSort(list, 0, list.length - 1);
-
-
-(logs.length < K) ? console.log(-1) : console.log(logs[K - 1]);
-
-
+console.log(answers.join('\n'))
